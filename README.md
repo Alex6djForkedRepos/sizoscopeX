@@ -1,13 +1,13 @@
-# Sizoscope
+# SizoscopeX
 
-Sizoscope is a binary size investigation tool to help you optimize and reduce the size of your .NET Native AOT binaries.
+SizoscopeX is a binary size investigation tool to help you optimize and reduce the size of your .NET Native AOT binaries.
 
 It supports visualizing the size contributions of individual methods and types, but also namespaces and assemblies. It also allows diffing before/after snapshots and offers basic root cause analysis.
 
-## Installing Sizoscope
+## Installing SizoscopeX
 
 ```shell
-$ dotnet tool install sizoscope --global --framework net7.0-windows
+$ dotnet tool install sizoscopeX --global
 ```
 
 ## Using Sizoscope
