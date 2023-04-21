@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net7.0-windows</TargetFramework>
-    <UseWindowsForms>true</UseWindowsForms>
+    <TargetFramework>net7.0</TargetFramework>
+    <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <ApplicationIcon>icon.ico</ApplicationIcon>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -16,21 +16,8 @@
     <PackageProjectUrl>https://github.com/MichalStrehovsky/sizoscope</PackageProjectUrl>
     <PackageLicenseExpression>AGPL-3.0-only</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
   </PropertyGroup>
-
-  <!-- HACK to allow packing as a .NET tool: https://github.com/dotnet/sdk/issues/16361 -->
-  <Target Name="HackBeforePackToolValidation" BeforeTargets="_PackToolValidation">
-      <PropertyGroup>
-          <TargetPlatformIdentifier></TargetPlatformIdentifier>
-      </PropertyGroup>
-  </Target>
-
-  <Target Name="HackAfterPackToolValidation" AfterTargets="_PackToolValidation">
-      <PropertyGroup>
-          <TargetPlatformIdentifier>Windows</TargetPlatformIdentifier>
-      </PropertyGroup>
-  </Target>
-  <!-- End of hack to allow packing as a .NET tool -->
 
   <ItemGroup>
     <None Include="../README.md">
@@ -53,21 +40,15 @@
 
   <ItemGroup>
     <Content Include="icon.ico" />
+    <AvaloniaResource Include="Styles\**\*.axaml" />
+    <AvaloniaResource Include="Assets\**\*.*" />
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Properties\Resources.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Update="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
+    <PackageReference Include="Avalonia" Version="11.0.0-preview6" />
+    <PackageReference Include="Avalonia.Desktop" Version="11.0.0-preview6" />
+    <PackageReference Condition="'$(Configuration)'=='Debug'" Include="Avalonia.Diagnostics" Version="11.0.0-preview6" />
+    <PackageReference Include="FluentAvaloniaUI" Version="2.0.0-preview6" />
   </ItemGroup>
 
 </Project>
