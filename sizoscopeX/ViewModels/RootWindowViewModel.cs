@@ -1,6 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 
-namespace sizoscope.ViewModels;
+namespace sizoscopeX.ViewModels;
 
 public class RootWindowViewModel
 {

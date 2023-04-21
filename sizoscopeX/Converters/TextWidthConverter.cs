@@ -1,7 +1,7 @@
 ﻿using Avalonia.Data.Converters;
 using System.Globalization;
 
-namespace sizoscope.Converters;
+namespace sizoscopeX.Converters;
 
 public class TextWidthConverter : IValueConverter
 {

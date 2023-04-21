@@ -2,7 +2,7 @@
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 
-namespace sizoscope;
+namespace sizoscopeX;
 
 public class App : Application
 {

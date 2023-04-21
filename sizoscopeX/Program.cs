@@ -1,6 +1,6 @@
 using Avalonia;
 
-namespace sizoscope
+namespace sizoscopeX
 {
     internal static class Program
     {

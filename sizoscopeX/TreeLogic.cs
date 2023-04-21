@@ -2,7 +2,7 @@
 using System.Reflection.Metadata;
 using static MstatData;
 
-namespace sizoscope
+namespace sizoscopeX
 {
     public class TreeLogic
     {

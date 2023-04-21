@@ -2,14 +2,14 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-		xmlns:controls="using:sizoscope.Controls"
-		xmlns:vm="using:sizoscope.ViewModels"
+		xmlns:controls="using:sizoscopeX.Controls"
+		xmlns:vm="using:sizoscopeX.ViewModels"
         MinWidth="720" MinHeight="200"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-        x:Class="sizoscope.RootWindow"
+        x:Class="sizoscopeX.RootWindow"
 		x:DataType="vm:RootWindowViewModel"
         Title="Root View">
-	<Grid RowDefinitions="Auto, *">
+	<Grid RowDefinitions="Auto, *" Margin="8">
 		<StackPanel Orientation="Horizontal" Margin="8" Grid.Row="0">
 			<TextBlock Text="Path from roots to " />
 			<TextBlock Text="{Binding Name}" />

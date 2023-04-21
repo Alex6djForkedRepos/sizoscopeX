@@ -8,7 +8,7 @@ using FluentAvalonia.UI.Media;
 using FluentAvalonia.UI.Windowing;
 using System.Runtime.InteropServices;
 
-namespace sizoscope;
+namespace sizoscopeX;
 
 public class FluentAppWindow : AppWindow
 {

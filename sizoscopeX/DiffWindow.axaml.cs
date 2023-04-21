@@ -1,14 +1,22 @@
 using Avalonia.Controls;
 using Avalonia.Input;
 using FluentAvalonia.UI.Controls;
-using sizoscope.ViewModels;
+using sizoscopeX.ViewModels;
 using static MstatData;
 
-namespace sizoscope
+namespace sizoscopeX
 {
     public partial class DiffWindow : FluentAppWindow
     {
         private readonly DiffWindowViewModel _viewModel;
+
+        [Obsolete("Should not be called except by XAML designer.")]
+        public DiffWindow()
+        {
+            InitializeComponent();
+            _viewModel = default!;
+        }
+
         public DiffWindow(MstatData baseline, MstatData compare)
         {
             InitializeComponent();
