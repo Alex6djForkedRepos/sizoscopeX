@@ -45,7 +45,7 @@ The main window and the diff window will show you what is in the binary, but not
 
 ![Roots window screenshot](docs/rootswindow.png)
 
-In the above screenshot, the reason why the top node was included in the executable was all the things nested under it. Some nodes have two reasons. This is typical for e.g. virtual method implementations - the reason why a virtual method implementation is generated is that _both_ the virtual method gets called somewhere _and_ a type implementing the method was allocated. The screenshot has one such situation for `SyncTextWriter.WriteLine`.
+In the above screenshot, the reason why the top node was included in the executable was all the things nested under it. Some nodes have two reasons. This is typical for e.g. virtual method implementations - the reason why a virtual method implementation is generated is that _both_ the virtual method gets called somewhere _and_ a type implementing the method was allocated. The screenshot has one such situation for `ConsoleStream.Read`.
 
 ## Tips and tricks
 
