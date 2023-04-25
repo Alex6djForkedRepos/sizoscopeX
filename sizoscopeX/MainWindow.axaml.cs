@@ -5,6 +5,7 @@ using Avalonia.Platform.Storage;
 using FluentAvalonia.UI.Controls;
 using Avalonia.Input;
 using static MstatData;
+using Avalonia.Threading;
 
 namespace sizoscopeX;
 
@@ -21,41 +22,65 @@ public partial class MainWindow : FluentAppWindow
         AddHandler(DragDrop.DropEvent, Drop);
     }
 
-    void DragOver(object? sender, DragEventArgs e)
+    private void DragOver(object? sender, DragEventArgs e)
     {
         e.DragEffects &= DragDropEffects.Copy;
         if (!e.Data.Contains(DataFormats.Files) || e.Data.GetFiles()?.FirstOrDefault() is not IStorageFile)
             e.DragEffects = DragDropEffects.None;
     }
 
-    private void Drop(object? sender, DragEventArgs e)
+    private async void Drop(object? sender, DragEventArgs e)
     {
-        e.DragEffects &= DragDropEffects.Copy;
-        if (e.Data.Contains(DataFormats.Files))
+        var currentFile = viewModel.FileName;
+        try
         {
-            var files = e.Data.GetFiles();
-            if (e.Data.GetFiles()?.FirstOrDefault() is IStorageFile file)
+            e.DragEffects &= DragDropEffects.Copy;
+            if (e.Data.Contains(DataFormats.Files))
             {
-                viewModel.FileName = file.TryGetLocalPath() ?? throw new InvalidOperationException();
+                if (e.Data.GetFiles()?.FirstOrDefault() is IStorageFile file)
+                {
+                    viewModel.FileName = file.TryGetLocalPath() is [.., '.', 'm' or 'M', 's' or 'S', 't' or 'T', 'a' or 'A', 't' or 'T'] path ? path : throw new InvalidOperationException("An invalid file has been dropped.");
+                }
             }
+        }
+        catch (Exception ex)
+        {
+            await PromptErrorAsync(ex.Message);
+            await Dispatcher.UIThread.InvokeAsync(() => viewModel.FileName = currentFile);
         }
     }
 
     public async void Open_Clicked(object? sender, RoutedEventArgs args)
     {
-        var result = await StorageProvider.OpenFilePickerAsync(new()
+        var currentFile = viewModel.FileName;
+        try
         {
-            AllowMultiple = false,
-            FileTypeFilter = new[] {
-                new FilePickerFileType("Mstat files") { Patterns = new[] { "*.mstat" } },
-                new FilePickerFileType("All files") { Patterns = new[] { "*.*" } }
-            },
-            Title = "Open a file for analysis"
-        });
-        if (result.Any())
-        {
-            viewModel.FileName = result.First().TryGetLocalPath() ?? throw new InvalidOperationException();
+            var result = await StorageProvider.OpenFilePickerAsync(new()
+            {
+                AllowMultiple = false,
+                FileTypeFilter = new[] { new FilePickerFileType("Mstat files") { Patterns = new[] { "*.mstat" } } },
+                Title = "Open a file for analysis"
+            });
+            if (result.Any())
+            {
+                viewModel.FileName = result[0].TryGetLocalPath() is [.., '.', 'm' or 'M', 's' or 'S', 't' or 'T', 'a' or 'A', 't' or 'T'] path ? path : throw new InvalidOperationException("An invalid file has been selected.");
+            }
         }
+        catch (Exception ex)
+        {
+            await PromptErrorAsync(ex.Message);
+            await Dispatcher.UIThread.InvokeAsync(() => viewModel.FileName = currentFile);
+        }
+    }
+
+    private static async Task PromptErrorAsync(string message)
+    {
+        await new ContentDialog
+        {
+            CloseButtonText = "OK",
+            Title = "Error",
+            Content = message
+        }.ShowAsync();
     }
 
     public async void Diff_Clicked(object? sender, RoutedEventArgs args)
@@ -63,29 +88,27 @@ public partial class MainWindow : FluentAppWindow
         var currentData = viewModel.CurrentData;
         if (currentData is null)
         {
-            var dialog = new ContentDialog
-            {
-                CloseButtonText = "OK",
-                Title = "Error",
-                Content = "You haven't open any file as the baseline."
-            };
-            await dialog.ShowAsync();
+            await PromptErrorAsync("You haven't open any file as the baseline.");
             return;
         }
 
-        var result = await StorageProvider.OpenFilePickerAsync(new()
+        try
         {
-            AllowMultiple = false,
-            FileTypeFilter = new[] {
-                new FilePickerFileType("Mstat files") { Patterns = new[] { "*.mstat" } },
-                new FilePickerFileType("All files") { Patterns = new[] { "*.*" } }
-            },
-            Title = "Open a file for compare"
-        });
-        if (result.Any())
+            var result = await StorageProvider.OpenFilePickerAsync(new()
+            {
+                AllowMultiple = false,
+                FileTypeFilter = new[] { new FilePickerFileType("Mstat files") { Patterns = new[] { "*.mstat" } } },
+                Title = "Open a file for compare"
+            });
+            if (result.Any())
+            {
+                using var mstaDataToCompare = Read(result[0].TryGetLocalPath() ?? throw new InvalidOperationException("An invalid file has been selected."));
+                await new DiffWindow(currentData, mstaDataToCompare).ShowDialog(this);
+            }
+        }
+        catch (Exception ex)
         {
-            using var mstaDataToCompare = Read(result.First().TryGetLocalPath() ?? throw new InvalidOperationException());
-            await new DiffWindow(currentData, mstaDataToCompare).ShowDialog(this);
+            await PromptErrorAsync(ex.Message);
         }
     }
 
@@ -118,26 +141,14 @@ public partial class MainWindow : FluentAppWindow
         {
             if (id.Value < 0)
             {
-                var dialog = new ContentDialog
-                {
-                    CloseButtonText = "OK",
-                    Title = "Error",
-                    Content = "Dependency graph information is only available in .NET 8 Preview 4 or later."
-                };
-                await dialog.ShowAsync();
+                await PromptErrorAsync("Dependency graph information is only available in .NET 8 Preview 4 or later.");
                 return;
             }
 
             var node = currentData.GetNodeForId(id.Value);
             if (node == null)
             {
-                var dialog = new ContentDialog
-                {
-                    CloseButtonText = "OK",
-                    Title = "Error",
-                    Content = "Unable to load dependency graph. Was IlcGenerateDgmlLog=true specified?"
-                };
-                await dialog.ShowAsync();
+                await PromptErrorAsync("Unable to load dependency graph. Was IlcGenerateDgmlLog=true specified?");
                 return;
             }
 
