@@ -31,8 +31,6 @@ public class DiffWindowViewModel : INotifyPropertyChanged
     public ObservableCollection<TreeNode> CompareItems { get; }
     public MstatData BaselineData { get; }
     public MstatData CompareData { get; }
-    public string BaselineDataFileSize => AsFileSize(BaselineData.Size);
-    public string CompareDataFileSize => AsFileSize(CompareData.Size);
     public string TitleString => $"Diff View - Total accounted difference: {AsFileSize(_diffSize)}";
 
     public Sorter BaselineSorter => BaselineSortMode is 0 ? Sorter.BySize() : Sorter.ByName();
