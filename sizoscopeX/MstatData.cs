@@ -225,9 +225,7 @@ public partial class MstatData : IDisposable
             if (majorVersion >= 2)
                 nodeId = reader.ILReadI4Constant() + RealNodeIdAddend;
 
-#if DEBUG
             _methodSize += size;
-#endif
 
             if (methodToken.Kind == HandleKind.MemberReference)
             {
