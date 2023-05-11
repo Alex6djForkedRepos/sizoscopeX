@@ -7,11 +7,14 @@ namespace sizoscopeX.ViewModels;
 public class DiffWindowViewModel : INotifyPropertyChanged
 {
     private readonly MstatData _baseline, _compare;
+    private readonly int _diffSize;
+
     public DiffWindowViewModel(MstatData baseline, MstatData compare)
     {
         var baselineTree = new ObservableCollection<TreeNode>();
         var compareTree = new ObservableCollection<TreeNode>();
         (_baseline, _compare) = MstatData.Diff(baseline, compare);
+        _diffSize = compare.Size - baseline.Size;
         BaselineData = _baseline;
         CompareData = _compare;
         RefreshTree(baselineTree, _baseline, Sorter.BySize());
@@ -28,6 +31,9 @@ public class DiffWindowViewModel : INotifyPropertyChanged
     public ObservableCollection<TreeNode> CompareItems { get; }
     public MstatData BaselineData { get; }
     public MstatData CompareData { get; }
+    public string BaselineDataFileSize => AsFileSize(BaselineData.Size);
+    public string CompareDataFileSize => AsFileSize(CompareData.Size);
+    public string TitleString => $"Diff View - Total accounted difference: {AsFileSize(_diffSize)}";
 
     public Sorter BaselineSorter => BaselineSortMode is 0 ? Sorter.BySize() : Sorter.ByName();
     public Sorter CompareSorter => CompareSortMode is 0 ? Sorter.BySize() : Sorter.ByName();

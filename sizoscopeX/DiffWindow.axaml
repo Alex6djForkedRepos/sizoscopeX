@@ -8,7 +8,7 @@
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="sizoscopeX.DiffWindow"
 		x:DataType="vm:DiffWindowViewModel"
-        Title="Diff View">
+        Title="{Binding TitleString}">
 	<Grid ColumnDefinitions="*,Auto,*">
 		<Grid RowDefinitions="Auto,*" Grid.Column="0" Margin="8">
 			<TextBlock Text="Only in baseline:" Margin="8,0" Grid.Row="0" VerticalAlignment="Center" />

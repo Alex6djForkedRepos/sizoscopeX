@@ -58,6 +58,7 @@ public class MainWindowViewModel : INotifyPropertyChanged
                     return;
                 }
                 _data = Read(value);
+                PropertyChanged?.Invoke(this, new(nameof(DataFileSize)));
                 RefreshTree(Items, _data, Sorter);
                 RefreshSearch();
             }
@@ -110,6 +111,8 @@ public class MainWindowViewModel : INotifyPropertyChanged
             }
         }
     }
+
+    public string? DataFileSize => AsFileSize(CurrentData?.Size ?? 0);
 
     private void ExecuteSearch(object? sender, EventArgs args)
     {

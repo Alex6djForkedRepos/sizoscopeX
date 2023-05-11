@@ -13,7 +13,7 @@
         Title="SizoscopeX">
 
 	<Grid ColumnDefinitions="*,Auto,*">
-		<Grid RowDefinitions="Auto,*" Grid.Column="0" DragDrop.AllowDrop="True">
+		<Grid RowDefinitions="Auto,*,Auto" Grid.Column="0" DragDrop.AllowDrop="True">
 			<Menu Grid.Row="0">
 				<MenuItem Header="File">
 					<MenuItem Header="Open..." Click="Open_Clicked" />
@@ -51,6 +51,10 @@
 					<Button Margin="0,8,0,0" Content="Open a file to continue..." Click="Open_Clicked" HorizontalAlignment="Center" />
 				</StackPanel>
 			</Grid>
+			<StackPanel Orientation="Horizontal" Grid.Row="2" Margin="8">
+				<TextBlock Text="Total accounted size: " />
+				<TextBlock Text="{Binding DataFileSize}" />
+			</StackPanel>
 		</Grid>
 		<GridSplitter Grid.Column="1" />
 		<Grid Grid.Column="2" RowDefinitions="Auto,*" Margin="4">
@@ -64,7 +68,7 @@
 			</Grid>
 			<ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
 				<Grid RowDefinitions="Auto,Auto,*">
-					<Grid Grid.Row="0" ColumnDefinitions="80,Auto,120,Auto,120" Margin="4">
+					<Grid Grid.Row="0" ColumnDefinitions="250,Auto,120,Auto,120" Margin="4">
 						<TextBlock Text="Name" Grid.Column="0" Margin="0,4,0,0" TextAlignment="Center" x:Name="Column1Header" />
 						<GridSplitter Grid.Column="1" />
 						<TextBlock Text="Exclusive Size" Grid.Column="2" Margin="4,4,0,0" TextAlignment="Center" x:Name="Column2Header" />
