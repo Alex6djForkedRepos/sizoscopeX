@@ -10,7 +10,7 @@ It supports visualizing the size contributions of individual methods and types, 
 $ dotnet tool install sizoscopeX --global
 ```
 
-## Using Sizoscope
+## Using SizoscopeX
 
 The tool only supports the [Native AOT deployment model](https://learn.microsoft.com/dotnet/core/deploying/native-aot/) in .NET 7 or later. After enabling Native AOT deployment on your project as documented in the linked doc (basically, add `<PublishAot>true</PublishAot>` to a `PropertyGroup` in your project), add following lines to the project to enable generation of additional compile-time diagnostic files:
 
