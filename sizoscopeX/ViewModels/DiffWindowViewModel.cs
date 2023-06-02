@@ -6,42 +6,67 @@ namespace sizoscopeX.ViewModels;
 
 public class DiffWindowViewModel : INotifyPropertyChanged
 {
-    private readonly MstatData _baseline, _compare;
-    private readonly int _diffSize;
+    private MstatData? _baseline, _compare;
+    private int _diffSize;
+    private bool _loading;
 
     public DiffWindowViewModel(MstatData baseline, MstatData compare)
     {
         var baselineTree = new ObservableCollection<TreeNode>();
         var compareTree = new ObservableCollection<TreeNode>();
-        (_baseline, _compare) = MstatData.Diff(baseline, compare);
-        _diffSize = compare.Size - baseline.Size;
-        BaselineData = _baseline;
-        CompareData = _compare;
-        RefreshTree(baselineTree, _baseline, Sorter.BySize());
-        RefreshTree(compareTree, _compare, Sorter.BySize());
-        BaselineItems = baselineTree;
-        CompareItems = compareTree;
+        Loading = true;
+        Task.Run(() => Task.FromResult(MstatData.Diff(baseline, compare)))
+            .ContinueWith(t =>
+            {
+                (_baseline, _compare) = t.Result;
+                _diffSize = compare.Size - baseline.Size;
+                BaselineData = _baseline;
+                CompareData = _compare;
+                RefreshTree(baselineTree, _baseline, Sorter.BySize());
+                RefreshTree(compareTree, _compare, Sorter.BySize());
+                BaselineItems = baselineTree;
+                CompareItems = compareTree;
+                PropertyChanged?.Invoke(this, new(nameof(BaselineItems)));
+                PropertyChanged?.Invoke(this, new(nameof(CompareItems)));
+                PropertyChanged?.Invoke(this, new(nameof(BaselineData)));
+                PropertyChanged?.Invoke(this, new(nameof(CompareData)));
+                PropertyChanged?.Invoke(this, new(nameof(TitleString)));
+                Loading = false;
+            }, TaskScheduler.FromCurrentSynchronizationContext());
     }
 
     private int _baselineSortMode, _compareSortMode;
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    public ObservableCollection<TreeNode> BaselineItems { get; }
-    public ObservableCollection<TreeNode> CompareItems { get; }
-    public MstatData BaselineData { get; }
-    public MstatData CompareData { get; }
+    public ObservableCollection<TreeNode>? BaselineItems { get; private set; }
+    public ObservableCollection<TreeNode>? CompareItems { get; private set; }
+    public MstatData? BaselineData { get; private set; }
+    public MstatData? CompareData { get; private set; }
     public string TitleString => $"Diff View - Total accounted difference: {AsFileSize(_diffSize)}";
 
     public Sorter BaselineSorter => BaselineSortMode is 0 ? Sorter.BySize() : Sorter.ByName();
     public Sorter CompareSorter => CompareSortMode is 0 ? Sorter.BySize() : Sorter.ByName();
+
+    public bool Loading
+    {
+        get => _loading;
+        set
+        {
+            if (value != _loading)
+            {
+                _loading = value;
+                PropertyChanged?.Invoke(this, new(nameof(Loading)));
+            }
+        }
+    }
 
     public int BaselineSortMode
     {
         get => _baselineSortMode;
         set
         {
-            if (value != _baselineSortMode)
+            if (value != _baselineSortMode && BaselineItems is not null && _baseline is not null)
             {
                 _baselineSortMode = value;
                 PropertyChanged?.Invoke(this, new(nameof(BaselineSortMode)));
@@ -56,7 +81,7 @@ public class DiffWindowViewModel : INotifyPropertyChanged
         get => _compareSortMode;
         set
         {
-            if (value != _compareSortMode)
+            if (value != _compareSortMode && CompareItems is not null && _compare is not null)
             {
                 _compareSortMode = value;
                 PropertyChanged?.Invoke(this, new(nameof(CompareSortMode)));

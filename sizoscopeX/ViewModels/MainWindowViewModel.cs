@@ -23,10 +23,23 @@ public class MainWindowViewModel : INotifyPropertyChanged
     private int _searchMode;
     private string? _searchPattern;
     private readonly DispatcherTimer _searchDebouncer;
+    private bool _loading;
 
     public ObservableCollection<TreeNode> Items { get; } = new();
     public ObservableCollection<SearchResultItem> SearchResult { get; } = new();
     public Sorter Sorter => SortMode is 0 ? Sorter.BySize() : Sorter.ByName();
+    public bool Loading
+    {
+        get => _loading;
+        set
+        {
+            if (value != _loading)
+            {
+                _loading = value;
+                PropertyChanged?.Invoke(this, new(nameof(Loading)));
+            }
+        }
+    }
 
     public void Refresh()
     {
@@ -46,7 +59,6 @@ public class MainWindowViewModel : INotifyPropertyChanged
         {
             if (value != _fileName)
             {
-                if (value == FileName) return;
                 _fileName = value;
                 PropertyChanged?.Invoke(this, new(nameof(FileName)));
                 _data?.Dispose();
@@ -57,10 +69,16 @@ public class MainWindowViewModel : INotifyPropertyChanged
                     SearchResult.Clear();
                     return;
                 }
-                _data = Read(value);
-                PropertyChanged?.Invoke(this, new(nameof(DataFileSize)));
-                RefreshTree(Items, _data, Sorter);
-                RefreshSearch();
+                Loading = true;
+                Task.Run(() => Task.FromResult(Read(value)))
+                    .ContinueWith(t =>
+                    {
+                        _data = t.Result;
+                        PropertyChanged?.Invoke(this, new(nameof(DataFileSize)));
+                        RefreshTree(Items, _data, Sorter);
+                        RefreshSearch();
+                        Loading = false;
+                    }, TaskScheduler.FromCurrentSynchronizationContext());
             }
         }
     }

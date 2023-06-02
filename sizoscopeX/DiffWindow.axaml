@@ -39,5 +39,6 @@
 				</TreeView.ItemTemplate>
 			</TreeView>
 		</Grid>
+		<ProgressBar Grid.ColumnSpan="3" IsVisible="{Binding Loading}" IsIndeterminate="true" Width="150" />
 	</Grid>
 </Window>

@@ -6,5 +6,6 @@ launchSettings.json
 .vs/
 .vscode/
 msbuild.binlog
+.DS_Store
 
 .fake

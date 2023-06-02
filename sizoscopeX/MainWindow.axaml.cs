@@ -12,6 +12,7 @@ namespace sizoscopeX;
 public partial class MainWindow : FluentAppWindow
 {
     private readonly MainWindowViewModel viewModel = new();
+    private static readonly string[] filterPatterns = new[] { "*.mstat" };
 
     public MainWindow()
     {
@@ -58,7 +59,7 @@ public partial class MainWindow : FluentAppWindow
             var result = await StorageProvider.OpenFilePickerAsync(new()
             {
                 AllowMultiple = false,
-                FileTypeFilter = new[] { new FilePickerFileType("Mstat files") { Patterns = new[] { "*.mstat" } } },
+                FileTypeFilter = new[] { new FilePickerFileType("Mstat files") { Patterns = filterPatterns } },
                 Title = "Open a file for analysis"
             });
             if (result.Any())
@@ -97,12 +98,18 @@ public partial class MainWindow : FluentAppWindow
             var result = await StorageProvider.OpenFilePickerAsync(new()
             {
                 AllowMultiple = false,
-                FileTypeFilter = new[] { new FilePickerFileType("Mstat files") { Patterns = new[] { "*.mstat" } } },
+                FileTypeFilter = new[] { new FilePickerFileType("Mstat files") { Patterns = filterPatterns } },
                 Title = "Open a file for compare"
             });
             if (result.Any())
             {
-                using var mstaDataToCompare = Read(result[0].TryGetLocalPath() ?? throw new InvalidOperationException("An invalid file has been selected."));
+                viewModel.Loading = true;
+                using var mstaDataToCompare = await Task.Run(() => Task.FromResult(Read(result[0].TryGetLocalPath() ?? throw new InvalidOperationException("An invalid file has been selected."))))
+                    .ContinueWith(t =>
+                    {
+                        viewModel.Loading = false;
+                        return t.Result;
+                    }, TaskScheduler.Default);
                 await new DiffWindow(currentData, mstaDataToCompare).ShowDialog(this);
             }
         }

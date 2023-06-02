@@ -51,6 +51,7 @@
 					<Button Margin="0,8,0,0" Content="Open a file to continue..." Click="Open_Clicked" HorizontalAlignment="Center" />
 				</StackPanel>
 			</Grid>
+			<ProgressBar Grid.Row="1" IsVisible="{Binding Loading}" IsIndeterminate="true" Width="150" />
 			<StackPanel Orientation="Horizontal" Grid.Row="2" Margin="8">
 				<TextBlock Text="Total accounted size: " />
 				<TextBlock Text="{Binding DataFileSize}" />
