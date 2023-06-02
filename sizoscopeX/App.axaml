@@ -3,10 +3,10 @@
              xmlns:local="using:sizoscopeX"
              x:Class="sizoscopeX.App"
              xmlns:ui="using:FluentAvalonia.UI.Controls"
-             xmlns:sty="using:FluentAvalonia.Styling">
+             xmlns:sty="using:FluentAvalonia.Styling"
+             Name="sizoscopeX">
 	<Application.Styles>
 		<sty:FluentAvaloniaTheme PreferUserAccentColor="True" PreferSystemTheme="True" />
 		<StyleInclude Source="/Styles/Controls.axaml" />
 	</Application.Styles>
-
 </Application>

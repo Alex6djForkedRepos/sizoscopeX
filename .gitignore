@@ -4,4 +4,7 @@ syntax: glob
 [Oo]bj/
 launchSettings.json
 .vs/
+.vscode/
 msbuild.binlog
+
+.fake

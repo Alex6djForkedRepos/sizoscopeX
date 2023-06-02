@@ -20,6 +20,10 @@ namespace sizoscopeX
                 {
                     UseWindowsUIComposition = true,
                     CompositionBackdropCornerRadius = 8f
+                })
+                .With(new MacOSPlatformOptions()
+                {
+                    DisableDefaultApplicationMenuItems = true
                 });
     }
 }

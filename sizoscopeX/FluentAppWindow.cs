@@ -50,7 +50,7 @@ public class FluentAppWindow : AppWindow
             if (IsWindows11 && thm != FluentAvaloniaTheme.HighContrastTheme)
             {
                 TransparencyBackgroundFallback = Brushes.Transparent;
-                TransparencyLevelHint = WindowTransparencyLevel.Mica;
+                TransparencyLevelHint = new [] { WindowTransparencyLevel.Mica, WindowTransparencyLevel.AcrylicBlur, WindowTransparencyLevel.None };
 
                 TryEnableMicaEffect();
             }
