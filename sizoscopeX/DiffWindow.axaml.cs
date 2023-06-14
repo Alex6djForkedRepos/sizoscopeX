@@ -60,7 +60,7 @@ namespace sizoscopeX
                     {
                         CloseButtonText = "OK",
                         Title = "Error",
-                        Content = "Unable to load dependency graph. Was IlcGenerateDgmlLog=true specified?"
+                        Content = "Unable to load dependency graph. Was IlcGenerateDgmlFile=true specified?"
                     };
                     await dialog.ShowAsync();
                     return;

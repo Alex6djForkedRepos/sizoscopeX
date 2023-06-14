@@ -155,7 +155,7 @@ public partial class MainWindow : FluentAppWindow
             var node = currentData.GetNodeForId(id.Value);
             if (node == null)
             {
-                await PromptErrorAsync("Unable to load dependency graph. Was IlcGenerateDgmlLog=true specified?");
+                await PromptErrorAsync("Unable to load dependency graph. Was IlcGenerateDgmlFile=true specified?");
                 return;
             }
 
