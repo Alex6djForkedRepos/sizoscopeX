@@ -15,6 +15,7 @@
     <PackageLicenseExpression>AGPL-3.0-only</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageID>sizoscopeX</PackageID>
+    <AssemblyName>sizoscopeX</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
