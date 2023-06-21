@@ -1,9 +1,10 @@
 ﻿using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Threading;
 using FluentAvalonia.UI.Controls;
 
 namespace sizoscopeX;
 
-class Utils
+static class Utils
 {
     public static void ShowWindow(object? content)
     {
@@ -16,5 +17,23 @@ class Utils
                 frame.Content = content;
                 break;
         }
+    }
+
+    public static Task<T> TaskRunIfPossible<T>(Func<T> action)
+    {
+        if (OperatingSystem.IsBrowser())
+        {
+            return Task.FromResult(action());
+        }
+        else
+        {
+            return Task.Run(action);
+        }
+    }
+
+    public static async Task ContinueOnMainThread<T>(this Task<T> task, Action<T> continuation)
+    {
+        var result1 = await task;
+        await Dispatcher.UIThread.InvokeAsync(() => continuation(result1));
     }
 }

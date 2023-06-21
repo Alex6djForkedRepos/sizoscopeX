@@ -72,15 +72,15 @@ public class MainViewModel : INotifyPropertyChanged
                     return;
                 }
                 Loading = true;
-                Task.Run(() => Task.FromResult(Read(value.Value.Mstat, value.Value.Dgml)))
-                    .ContinueWith(t =>
+                _ = Utils.TaskRunIfPossible(() => Read(value.Value.Mstat, value.Value.Dgml))
+                    .ContinueOnMainThread(t =>
                     {
-                        _data = t.Result;
+                        _data = t;
                         PropertyChanged?.Invoke(this, new(nameof(DataFileSize)));
                         RefreshTree(Items, _data, Sorter);
                         RefreshSearch();
                         Loading = false;
-                    }, TaskScheduler.FromCurrentSynchronizationContext());
+                    });
             }
         }
     }
