@@ -19,14 +19,9 @@ partial class MstatData
         return _nameToNode.GetValueOrDefault(name);
     }
 
-    private void TryLoadAssociatedDgmlFile(string fileName)
+    private void LoadAssociatedDgmlFile(Stream stream)
     {
-        fileName = Path.ChangeExtension(fileName, "scan.dgml.xml");
-
-        if (!File.Exists(fileName))
-            return;
-
-        var directedGraph = XElement.Load(fileName);
+        var directedGraph = XElement.Load(stream);
 
         var idToNode = new Dictionary<int, Node>();
         _nameToNode = new Dictionary<string, Node>(StringComparer.Ordinal);

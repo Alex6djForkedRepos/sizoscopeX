@@ -8,9 +8,9 @@ using static sizoscopeX.TreeLogic;
 
 namespace sizoscopeX.ViewModels;
 
-public class MainWindowViewModel : INotifyPropertyChanged
+public class MainViewModel : INotifyPropertyChanged
 {
-    public MainWindowViewModel()
+    public MainViewModel()
     {
         _searchDebouncer = new(TimeSpan.FromMilliseconds(500), DispatcherPriority.Normal, ExecuteSearch);
     }
@@ -18,7 +18,7 @@ public class MainWindowViewModel : INotifyPropertyChanged
     public event PropertyChangedEventHandler? PropertyChanged;
 
     private MstatData? _data;
-    private string? _fileName;
+    private (Stream Mstat, Stream? Dgml)? _file;
     private int _sortMode;
     private int _searchMode;
     private string? _searchPattern;
@@ -52,15 +52,17 @@ public class MainWindowViewModel : INotifyPropertyChanged
 
     public MstatData? CurrentData => _data;
 
-    public string? FileName
+    public (Stream Mstat, Stream? Dgml)? File
     {
-        get => _fileName;
+        get => _file;
         set
         {
-            if (value != _fileName)
+            if (value != _file)
             {
-                _fileName = value;
-                PropertyChanged?.Invoke(this, new(nameof(FileName)));
+                _file?.Mstat?.Dispose();
+                _file?.Dgml?.Dispose();
+                _file = value;
+                PropertyChanged?.Invoke(this, new(nameof(File)));
                 _data?.Dispose();
                 if (value is null)
                 {
@@ -70,7 +72,7 @@ public class MainWindowViewModel : INotifyPropertyChanged
                     return;
                 }
                 Loading = true;
-                Task.Run(() => Task.FromResult(Read(value)))
+                Task.Run(() => Task.FromResult(Read(value.Value.Mstat, value.Value.Dgml)))
                     .ContinueWith(t =>
                     {
                         _data = t.Result;

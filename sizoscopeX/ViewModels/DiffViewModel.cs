@@ -4,17 +4,18 @@ using System.ComponentModel;
 
 namespace sizoscopeX.ViewModels;
 
-public class DiffWindowViewModel : INotifyPropertyChanged
+public sealed class DiffViewModel : INotifyPropertyChanged
 {
     private MstatData? _baseline, _compare;
     private int _diffSize;
     private bool _loading;
 
-    public DiffWindowViewModel(MstatData baseline, MstatData compare)
+    public DiffViewModel(MstatData baseline, MstatData compare)
     {
         var baselineTree = new ObservableCollection<TreeNode>();
         var compareTree = new ObservableCollection<TreeNode>();
         Loading = true;
+        TitleString = "Diff View - sizoscopeX";
         Task.Run(() => Task.FromResult(MstatData.Diff(baseline, compare)))
             .ContinueWith(t =>
             {
@@ -30,7 +31,8 @@ public class DiffWindowViewModel : INotifyPropertyChanged
                 PropertyChanged?.Invoke(this, new(nameof(CompareItems)));
                 PropertyChanged?.Invoke(this, new(nameof(BaselineData)));
                 PropertyChanged?.Invoke(this, new(nameof(CompareData)));
-                PropertyChanged?.Invoke(this, new(nameof(TitleString)));
+                TitleString = $"Diff View - Total accounted difference: {AsFileSize(_diffSize)} - sizoscopeX";
+                TitleChangedEvent?.Invoke(this, new());
                 Loading = false;
             }, TaskScheduler.FromCurrentSynchronizationContext());
     }
@@ -43,7 +45,8 @@ public class DiffWindowViewModel : INotifyPropertyChanged
     public ObservableCollection<TreeNode>? CompareItems { get; private set; }
     public MstatData? BaselineData { get; private set; }
     public MstatData? CompareData { get; private set; }
-    public string TitleString => $"Diff View - Total accounted difference: {AsFileSize(_diffSize)}";
+    public event EventHandler? TitleChangedEvent;
+    public string TitleString { get; private set; }
 
     public Sorter BaselineSorter => BaselineSortMode is 0 ? Sorter.BySize() : Sorter.ByName();
     public Sorter CompareSorter => CompareSortMode is 0 ? Sorter.BySize() : Sorter.ByName();

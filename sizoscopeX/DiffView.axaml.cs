@@ -6,22 +6,38 @@ using static MstatData;
 
 namespace sizoscopeX
 {
-    public partial class DiffWindow : FluentAppWindow
+    public partial class DiffView : UserControl
     {
-        private readonly DiffWindowViewModel _viewModel;
+        private readonly DiffViewModel _viewModel;
 
         [Obsolete("Should not be called except by XAML designer.")]
-        public DiffWindow()
+        public DiffView()
         {
             InitializeComponent();
             _viewModel = default!;
         }
 
-        public DiffWindow(MstatData baseline, MstatData compare)
+        public DiffView(MstatData baseline, MstatData compare)
         {
             InitializeComponent();
             _viewModel = new(baseline, compare);
             DataContext = _viewModel;
+            _viewModel.TitleChangedEvent += (obj, e) =>
+            {
+                if (TopLevel.GetTopLevel(this) is Window window && obj is DiffViewModel vm)
+                {
+                    window.Title = vm.TitleString;
+                }
+            };
+        }
+
+        protected override void OnLoaded()
+        {
+            if (TopLevel.GetTopLevel(this) is Window window)
+            {
+                window.Title = _viewModel.TitleString;
+            }
+            base.OnLoaded();
         }
 
         private async void Tree_DoubleTapped(object? sender, TappedEventArgs args)
@@ -66,7 +82,8 @@ namespace sizoscopeX
                     return;
                 }
 
-                await new RootWindow(node).ShowDialog(this);
+                var view = new RootView(node);
+                Utils.ShowWindow(view);
             }
         }
     }

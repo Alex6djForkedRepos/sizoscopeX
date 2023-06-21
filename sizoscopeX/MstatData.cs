@@ -4,6 +4,7 @@ using System.Reflection.Metadata;
 using System.Reflection.PortableExecutable;
 using System.Text;
 using System.Runtime.InteropServices;
+using Avalonia.Controls;
 
 public partial class MstatData : IDisposable
 {
@@ -60,16 +61,18 @@ public partial class MstatData : IDisposable
             Marshal.FreeHGlobal(_peImage);
     }
 
-    public static unsafe MstatData Read(string fileName)
+    public static unsafe MstatData Read(Stream mstat, Stream? dgml)
     {
-        using FileStream fs = File.OpenRead(fileName);
-        int length = checked((int)fs.Length);
+        mstat.Seek(0, SeekOrigin.Begin);
+        int length = checked((int)mstat.Length);
         byte* mem = (byte*)Marshal.AllocHGlobal(length);
-        fs.Read(new Span<byte>(mem, length));
+        mstat.Read(new Span<byte>(mem, length));
         var data = new MstatData(mem, length).Parse();
-
-        data.TryLoadAssociatedDgmlFile(fileName);
-
+        if (dgml is not null)
+        {
+            dgml.Seek(0, SeekOrigin.Begin);
+            data.LoadAssociatedDgmlFile(dgml);
+        }
         return data;
     }
 
@@ -270,7 +273,7 @@ public partial class MstatData : IDisposable
             MemberReference memberRef = reader.GetMemberReference((MemberReferenceHandle)spec.Method);
             BlobReader instReader = reader.GetBlobReader(spec.Signature);
             instReader.ReadSignatureHeader();
-            
+
             string name = _data._memberRefNameCache[MetadataTokens.GetRowNumber(spec.Method)] ?? reader.GetString(memberRef.Name);
             sb.Append(name);
 

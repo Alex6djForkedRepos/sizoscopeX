@@ -9,12 +9,12 @@ using Avalonia.Threading;
 
 namespace sizoscopeX;
 
-public partial class MainWindow : FluentAppWindow
+public partial class MainView : UserControl
 {
-    private readonly MainWindowViewModel viewModel = new();
-    private static readonly string[] filterPatterns = new[] { "*.mstat" };
+    private readonly MainViewModel viewModel = new();
+    private static readonly string[] filterPatterns = new[] { "*.mstat", "*.scan.dgml.xml" };
 
-    public MainWindow()
+    public MainView()
     {
         InitializeComponent();
         DataContext = viewModel;
@@ -32,47 +32,73 @@ public partial class MainWindow : FluentAppWindow
 
     private async void Drop(object? sender, DragEventArgs e)
     {
-        var currentFile = viewModel.FileName;
+        var currentFile = viewModel.File;
         try
         {
             e.DragEffects &= DragDropEffects.Copy;
             if (e.Data.Contains(DataFormats.Files))
             {
-                if (e.Data.GetFiles()?.FirstOrDefault() is IStorageFile file)
+                var mstat = e.Data.GetFiles()?.FirstOrDefault(i => i is IStorageFile { Name: [.., '.', 'm' or 'M', 's' or 'S', 't' or 'T', 'a' or 'A', 't' or 'T'] }) as IStorageFile;
+                var dmgl = e.Data.GetFiles()?.FirstOrDefault(i => i is IStorageFile { Name: [.., '.', 's' or 'S', 'c' or 'C', 'a' or 'A', 'n' or 'N', '.', 'd' or 'D', 'g' or 'G', 'm' or 'M', 'l' or 'L', '.', 'x' or 'X', 'm' or 'M', 'l' or 'L'] }) as IStorageFile;
+                if (mstat is null)
                 {
-                    viewModel.FileName = file.TryGetLocalPath() is [.., '.', 'm' or 'M', 's' or 'S', 't' or 'T', 'a' or 'A', 't' or 'T'] path ? path : throw new InvalidOperationException("An invalid file has been dropped.");
+                    throw new InvalidOperationException("An invalid file has been dropped.");
                 }
+                viewModel.File = (await mstat.OpenReadAsync(), dmgl is null ? null : await dmgl.OpenReadAsync());
             }
         }
         catch (Exception ex)
         {
             await PromptErrorAsync(ex.Message);
-            await Dispatcher.UIThread.InvokeAsync(() => viewModel.FileName = currentFile);
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                viewModel.File = currentFile;
+                viewModel.Loading = false;
+            });
         }
     }
 
     public async void Open_Clicked(object? sender, RoutedEventArgs args)
     {
-        var currentFile = viewModel.FileName;
+        var currentFile = viewModel.File;
         try
         {
             var result = await StorageProvider.OpenFilePickerAsync(new()
             {
-                AllowMultiple = false,
-                FileTypeFilter = new[] { new FilePickerFileType("Mstat files") { Patterns = filterPatterns } },
-                Title = "Open a file for analysis"
+                AllowMultiple = true,
+                FileTypeFilter = new[] { new FilePickerFileType("Mstat and dgml files") { Patterns = filterPatterns } },
+                Title = "Open to analyze"
             });
             if (result.Any())
             {
-                viewModel.FileName = result[0].TryGetLocalPath() is [.., '.', 'm' or 'M', 's' or 'S', 't' or 'T', 'a' or 'A', 't' or 'T'] path ? path : throw new InvalidOperationException("An invalid file has been selected.");
+                var mstat = result.FirstOrDefault(i => i is IStorageFile { Name: [.., '.', 'm' or 'M', 's' or 'S', 't' or 'T', 'a' or 'A', 't' or 'T'] });
+                var dmgl = result.FirstOrDefault(i => i is IStorageFile { Name: [.., '.', 's' or 'S', 'c' or 'C', 'a' or 'A', 'n' or 'N', '.', 'd' or 'D', 'g' or 'G', 'm' or 'M', 'l' or 'L', '.', 'x' or 'X', 'm' or 'M', 'l' or 'L'] });
+                if (mstat is null)
+                {
+                    throw new InvalidOperationException("An invalid file has been dropped.");
+                }
+                if (dmgl is null)
+                {
+                    if (mstat.TryGetLocalPath() is string path)
+                    {
+                        dmgl = await StorageProvider.TryGetFileFromPathAsync(Path.ChangeExtension(path, "scan.dgml.xml"));
+                    }
+                }
+                viewModel.File = (await mstat.OpenReadAsync(), dmgl is null ? null : await dmgl.OpenReadAsync());
             }
         }
         catch (Exception ex)
         {
             await PromptErrorAsync(ex.Message);
-            await Dispatcher.UIThread.InvokeAsync(() => viewModel.FileName = currentFile);
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                viewModel.File = currentFile;
+                viewModel.Loading = false;
+            });
         }
     }
+
+    private IStorageProvider StorageProvider => TopLevel.GetTopLevel(this)?.StorageProvider ?? throw new InvalidOperationException("Invalid owner.");
 
     private static async Task PromptErrorAsync(string message)
     {
@@ -98,19 +124,34 @@ public partial class MainWindow : FluentAppWindow
             var result = await StorageProvider.OpenFilePickerAsync(new()
             {
                 AllowMultiple = false,
-                FileTypeFilter = new[] { new FilePickerFileType("Mstat files") { Patterns = filterPatterns } },
-                Title = "Open a file for compare"
+                FileTypeFilter = new[] { new FilePickerFileType("Mstat and dgml files") { Patterns = filterPatterns } },
+                Title = "Select to compare"
             });
             if (result.Any())
             {
+                var mstat = result.FirstOrDefault(i => i is IStorageFile { Name: [.., '.', 'm' or 'M', 's' or 'S', 't' or 'T', 'a' or 'A', 't' or 'T'] });
+                var dmgl = result.FirstOrDefault(i => i is IStorageFile { Name: [.., '.', 's' or 'S', 'c' or 'C', 'a' or 'A', 'n' or 'N', '.', 'd' or 'D', 'g' or 'G', 'm' or 'M', 'l' or 'L', '.', 'x' or 'X', 'm' or 'M', 'l' or 'L'] });
+                if (mstat is null)
+                {
+                    throw new InvalidOperationException("An invalid file has been dropped.");
+                }
+                if (dmgl is null)
+                {
+                    if (mstat.TryGetLocalPath() is string path)
+                    {
+                        dmgl = await StorageProvider.TryGetFileFromPathAsync(Path.ChangeExtension(path, "scan.dgml.xml"));
+                    }
+                }
+
                 viewModel.Loading = true;
-                using var mstaDataToCompare = await Task.Run(() => Task.FromResult(Read(result[0].TryGetLocalPath() ?? throw new InvalidOperationException("An invalid file has been selected."))))
+                using var mstaDataToCompare = await Task.Run(async () => Read(await mstat.OpenReadAsync(), dmgl is null ? null : await dmgl.OpenReadAsync()))
                     .ContinueWith(t =>
                     {
                         viewModel.Loading = false;
                         return t.Result;
-                    }, TaskScheduler.Default);
-                await new DiffWindow(currentData, mstaDataToCompare).ShowDialog(this);
+                    }, TaskScheduler.FromCurrentSynchronizationContext());
+                var view = new DiffView(currentData, mstaDataToCompare);
+                Utils.ShowWindow(view);
             }
         }
         catch (Exception ex)
@@ -159,7 +200,8 @@ public partial class MainWindow : FluentAppWindow
                 return;
             }
 
-            await new RootWindow(node).ShowDialog(this);
+            var view = new RootView(node);
+            Utils.ShowWindow(view);
         }
     }
 

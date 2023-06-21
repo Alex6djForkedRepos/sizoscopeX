@@ -2,11 +2,11 @@
 
 namespace sizoscopeX.ViewModels;
 
-public class RootWindowViewModel
+public class RootViewModel
 {
     public ObservableCollection<TreeNode> Items { get; } = new ObservableCollection<TreeNode>();
     public string Name { get; }
-    public RootWindowViewModel(MstatData.Node node)
+    public RootViewModel(MstatData.Node node)
     {
         var tree = CreateTree(node);
         Name = node.Name;

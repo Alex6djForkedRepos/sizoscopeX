@@ -1,4 +1,4 @@
-<Window xmlns="https://github.com/avaloniaui"
+<UserControl xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -8,9 +8,8 @@
 		xmlns:conv="using:sizoscopeX.Converters"
         MinWidth="720" MinHeight="200"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="400"
-        x:Class="sizoscopeX.MainWindow"
-		x:DataType="vm:MainWindowViewModel"
-        Title="SizoscopeX">
+        x:Class="sizoscopeX.MainView"
+		x:DataType="vm:MainViewModel">
 
 	<Grid ColumnDefinitions="*,Auto,*">
 		<Grid RowDefinitions="Auto,*,Auto" Grid.Column="0" DragDrop.AllowDrop="True">
@@ -38,14 +37,14 @@
 					</Button>
 				</Border>
 			</Grid>
-			<TreeView ItemsSource="{Binding Items}" DoubleTapped="Tree_DoubleTapped" Grid.Row="1" IsVisible="{Binding FileName, Converter={x:Static StringConverters.IsNotNullOrEmpty},Mode=OneWay}">
+			<TreeView ItemsSource="{Binding Items}" DoubleTapped="Tree_DoubleTapped" Grid.Row="1" IsVisible="{Binding File, Converter={x:Static ObjectConverters.IsNotNull},Mode=OneWay}">
 				<TreeView.ItemTemplate>
 					<TreeDataTemplate ItemsSource="{Binding Nodes}">
 						<controls:TreeItemControl Type="{Binding Type}" Text="{Binding Name}" />
 					</TreeDataTemplate>
 				</TreeView.ItemTemplate>
 			</TreeView>
-			<Grid Grid.Row="1" IsVisible="{Binding FileName, Converter={x:Static StringConverters.IsNullOrEmpty},Mode=OneWay}">
+			<Grid Grid.Row="1" IsVisible="{Binding File, Converter={x:Static ObjectConverters.IsNull},Mode=OneWay}">
 				<StackPanel Margin="0,-40,0,0" HorizontalAlignment="Center" VerticalAlignment="Center">
 					<TextBlock FontSize="24" Text="Welcome" HorizontalAlignment="Center" />
 					<Button Margin="0,8,0,0" Content="Open a file to continue..." Click="Open_Clicked" HorizontalAlignment="Center" />
@@ -97,4 +96,4 @@
 			</ScrollViewer>
 		</Grid>
 	</Grid>
-</Window>
+</UserControl>
