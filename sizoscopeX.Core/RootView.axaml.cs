@@ -1,7 +1,7 @@
 using Avalonia.Controls;
-using sizoscopeX.ViewModels;
+using sizoscopeX.Core.ViewModels;
 
-namespace sizoscopeX
+namespace sizoscopeX.Core
 {
     public partial class RootView : UserControl
     {

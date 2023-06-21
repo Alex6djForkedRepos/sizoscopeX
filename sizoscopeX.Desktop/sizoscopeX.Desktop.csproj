@@ -5,17 +5,44 @@
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <Version Condition="'$(Version)' == ''">42.42.42.42</Version>
+
+    <PackAsTool>true</PackAsTool>
+    <Authors>Michal Strehovsky, hez2010</Authors>
+    <Company>Michal Strehovsky, hez2010</Company>
+    <Description>.NET tool to analyze size of Native AOT binaries.</Description>
+    <PackageProjectUrl>https://github.com/hez2010/sizoscopeX</PackageProjectUrl>
+    <PackageLicenseExpression>AGPL-3.0-only</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageID>sizoscopeX</PackageID>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Include="../README.md">
+      <Pack>true</Pack>
+      <PackagePath>/</PackagePath>
+    </None>
+    <None Include="../docs/diffwindow.png">
+      <Pack>true</Pack>
+      <PackagePath>/docs/</PackagePath>
+    </None>
+    <None Include="../docs/mainwindow.png">
+      <Pack>true</Pack>
+      <PackagePath>/docs/</PackagePath>
+    </None>
+    <None Include="../docs/rootswindow.png">
+      <Pack>true</Pack>
+      <PackagePath>/docs/</PackagePath>
+    </None>
+  </ItemGroup>
+
   <PropertyGroup Condition="'$(Configuration)'=='Release'">
-    <PublishAOT>true</PublishAOT>
-    <PublishTrimmed>true</PublishTrimmed>
     <InvariantGlobalization>true</InvariantGlobalization>
     <TrimMode>full</TrimMode>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\sizoscopeX\sizoscopeX.csproj" />
+    <ProjectReference Include="..\sizoscopeX.Core\sizoscopeX.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>

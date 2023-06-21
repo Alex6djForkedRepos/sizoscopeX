@@ -1,7 +1,7 @@
 ﻿using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
 
-namespace sizoscopeX;
+namespace sizoscopeX.Core;
 
 static class Utils
 {

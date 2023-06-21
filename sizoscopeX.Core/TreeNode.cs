@@ -1,8 +1,8 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
-using static sizoscopeX.TreeLogic;
+using static sizoscopeX.Core.TreeLogic;
 
-namespace sizoscopeX
+namespace sizoscopeX.Core
 {
     public sealed class TreeNode : INotifyPropertyChanged
     {

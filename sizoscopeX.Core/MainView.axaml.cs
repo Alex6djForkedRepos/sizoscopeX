@@ -1,12 +1,12 @@
 ﻿using Avalonia.Controls;
-using sizoscopeX.ViewModels;
+using sizoscopeX.Core.ViewModels;
 using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
 using FluentAvalonia.UI.Controls;
 using Avalonia.Input;
 using static MstatData;
 
-namespace sizoscopeX;
+namespace sizoscopeX.Core;
 
 public partial class MainView : UserControl
 {

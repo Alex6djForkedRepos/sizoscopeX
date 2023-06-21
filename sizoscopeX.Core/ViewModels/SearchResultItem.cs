@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace sizoscopeX.ViewModels;
+namespace sizoscopeX.Core.ViewModels;
 
 public sealed class SearchResultItem : INotifyPropertyChanged
 {

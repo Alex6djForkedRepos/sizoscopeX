@@ -1,4 +1,5 @@
 ﻿using Avalonia;
+using sizoscopeX.Core;
 
 namespace sizoscopeX.Desktop;
 

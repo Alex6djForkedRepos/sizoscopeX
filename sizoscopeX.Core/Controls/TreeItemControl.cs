@@ -4,7 +4,7 @@ using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Media;
 
-namespace sizoscopeX.Controls;
+namespace sizoscopeX.Core.Controls;
 
 [PseudoClasses(pcAssembly, pcNamespace, pcClass, pcMethod, pcInstantiation)]
 public class TreeItemControl : TemplatedControl

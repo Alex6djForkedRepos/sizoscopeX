@@ -1,7 +1,7 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Interactivity;
 
-namespace sizoscopeX;
+namespace sizoscopeX.Core;
 
 public partial class SingleTopView : UserControl
 {

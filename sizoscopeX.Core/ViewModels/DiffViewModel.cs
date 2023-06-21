@@ -1,8 +1,8 @@
 ﻿using System.Collections.ObjectModel;
-using static sizoscopeX.TreeLogic;
+using static sizoscopeX.Core.TreeLogic;
 using System.ComponentModel;
 
-namespace sizoscopeX.ViewModels;
+namespace sizoscopeX.Core.ViewModels;
 
 public sealed class DiffViewModel : INotifyPropertyChanged
 {

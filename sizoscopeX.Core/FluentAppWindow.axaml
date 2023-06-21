@@ -2,8 +2,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-		x:Class="sizoscopeX.FluentAppWindow"
+        x:Class="sizoscopeX.Core.FluentAppWindow"
         MinWidth="720" MinHeight="200"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-		Icon="icon.ico">
+        Icon="icon.ico">
 </Window>

@@ -1,10 +1,10 @@
 using Avalonia.Controls;
 using Avalonia.Input;
 using FluentAvalonia.UI.Controls;
-using sizoscopeX.ViewModels;
+using sizoscopeX.Core.ViewModels;
 using static MstatData;
 
-namespace sizoscopeX
+namespace sizoscopeX.Core
 {
     public partial class DiffView : UserControl
     {

@@ -5,7 +5,7 @@
         xmlns:ctrls="using:FluentAvalonia.UI.Controls"
         MinWidth="720" MinHeight="200"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-        x:Class="sizoscopeX.SingleTopView">
+        x:Class="sizoscopeX.Core.SingleTopView">
 	<Grid RowDefinitions="Auto,*">
 		<Grid ColumnDefinitions="Auto,*" Grid.Row="0" Height="32">
 			<Button x:Name="Back" IsVisible="False" VerticalAlignment="Top" HorizontalAlignment="Left" Click="Back_Clicked"  Grid.Column="0">

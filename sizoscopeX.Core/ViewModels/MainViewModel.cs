@@ -4,9 +4,9 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Reflection.Metadata;
 using static MstatData;
-using static sizoscopeX.TreeLogic;
+using static sizoscopeX.Core.TreeLogic;
 
-namespace sizoscopeX.ViewModels;
+namespace sizoscopeX.Core.ViewModels;
 
 public class MainViewModel : INotifyPropertyChanged
 {

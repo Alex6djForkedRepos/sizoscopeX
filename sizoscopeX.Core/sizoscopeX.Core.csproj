@@ -8,35 +8,8 @@
     <ApplicationIcon>icon.ico</ApplicationIcon>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Version Condition="'$(Version)' == ''">42.42.42.42</Version>
-
-    <PackAsTool>true</PackAsTool>
-    <Authors>Michal Strehovsky, hez2010</Authors>
-    <Company>Michal Strehovsky, hez2010</Company>
-    <Description>.NET tool to analyze size of Native AOT binaries.</Description>
-    <PackageProjectUrl>https://github.com/hez2010/sizoscopeX</PackageProjectUrl>
-    <PackageLicenseExpression>AGPL-3.0-only</PackageLicenseExpression>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
   </PropertyGroup>
-
-  <ItemGroup>
-    <None Include="../README.md">
-      <Pack>true</Pack>
-      <PackagePath>/</PackagePath>
-    </None>
-    <None Include="../docs/diffwindow.png">
-      <Pack>true</Pack>
-      <PackagePath>/docs/</PackagePath>
-    </None>
-    <None Include="../docs/mainwindow.png">
-      <Pack>true</Pack>
-      <PackagePath>/docs/</PackagePath>
-    </None>
-    <None Include="../docs/rootswindow.png">
-      <Pack>true</Pack>
-      <PackagePath>/docs/</PackagePath>
-    </None>
-  </ItemGroup>
 
   <ItemGroup>
     <AvaloniaResource Include="icon.ico" />
