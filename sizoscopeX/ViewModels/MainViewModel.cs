@@ -18,7 +18,7 @@ public class MainViewModel : INotifyPropertyChanged
     public event PropertyChangedEventHandler? PropertyChanged;
 
     private MstatData? _data;
-    private (Stream Mstat, Stream? Dgml)? _file;
+    private (MemoryStream Mstat, MemoryStream? Dgml)? _file;
     private int _sortMode;
     private int _searchMode;
     private string? _searchPattern;
@@ -52,7 +52,7 @@ public class MainViewModel : INotifyPropertyChanged
 
     public MstatData? CurrentData => _data;
 
-    public (Stream Mstat, Stream? Dgml)? File
+    public (MemoryStream Mstat, MemoryStream? Dgml)? File
     {
         get => _file;
         set

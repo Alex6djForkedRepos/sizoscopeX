@@ -38,13 +38,10 @@ public partial class MainView : UserControl
             e.DragEffects &= DragDropEffects.Copy;
             if (e.Data.Contains(DataFormats.Files))
             {
-                var mstat = e.Data.GetFiles()?.FirstOrDefault(i => i is IStorageFile { Name: [.., '.', 'm' or 'M', 's' or 'S', 't' or 'T', 'a' or 'A', 't' or 'T'] }) as IStorageFile;
-                var dmgl = e.Data.GetFiles()?.FirstOrDefault(i => i is IStorageFile { Name: [.., '.', 's' or 'S', 'c' or 'C', 'a' or 'A', 'n' or 'N', '.', 'd' or 'D', 'g' or 'G', 'm' or 'M', 'l' or 'L', '.', 'x' or 'X', 'm' or 'M', 'l' or 'L'] }) as IStorageFile;
-                if (mstat is null)
-                {
-                    throw new InvalidOperationException("An invalid file has been dropped.");
-                }
-                viewModel.File = (await mstat.OpenReadAsync(), dmgl is null ? null : await dmgl.OpenReadAsync());
+                var files = e.Data.GetFiles()!.ToArray();
+                
+                var (mstatStream, dmglStream) = await ReadStatFilesAsync(files);
+                viewModel.File = (mstatStream, dmglStream);
             }
         }
         catch (Exception ex)
@@ -71,20 +68,9 @@ public partial class MainView : UserControl
             });
             if (result.Any())
             {
-                var mstat = result.FirstOrDefault(i => i is IStorageFile { Name: [.., '.', 'm' or 'M', 's' or 'S', 't' or 'T', 'a' or 'A', 't' or 'T'] });
-                var dmgl = result.FirstOrDefault(i => i is IStorageFile { Name: [.., '.', 's' or 'S', 'c' or 'C', 'a' or 'A', 'n' or 'N', '.', 'd' or 'D', 'g' or 'G', 'm' or 'M', 'l' or 'L', '.', 'x' or 'X', 'm' or 'M', 'l' or 'L'] });
-                if (mstat is null)
-                {
-                    throw new InvalidOperationException("An invalid file has been dropped.");
-                }
-                if (dmgl is null)
-                {
-                    if (mstat.TryGetLocalPath() is string path)
-                    {
-                        dmgl = await StorageProvider.TryGetFileFromPathAsync(Path.ChangeExtension(path, "scan.dgml.xml"));
-                    }
-                }
-                viewModel.File = (await mstat.OpenReadAsync(), dmgl is null ? null : await dmgl.OpenReadAsync());
+                var (mstatStream, dmglStream) = await ReadStatFilesAsync(result);
+
+                viewModel.File = (mstatStream, dmglStream);
             }
         }
         catch (Exception ex)
@@ -129,27 +115,10 @@ public partial class MainView : UserControl
             });
             if (result.Any())
             {
-                var mstat = result.FirstOrDefault(i => i is IStorageFile { Name: [.., '.', 'm' or 'M', 's' or 'S', 't' or 'T', 'a' or 'A', 't' or 'T'] });
-                var dmgl = result.FirstOrDefault(i => i is IStorageFile { Name: [.., '.', 's' or 'S', 'c' or 'C', 'a' or 'A', 'n' or 'N', '.', 'd' or 'D', 'g' or 'G', 'm' or 'M', 'l' or 'L', '.', 'x' or 'X', 'm' or 'M', 'l' or 'L'] });
-                if (mstat is null)
-                {
-                    throw new InvalidOperationException("An invalid file has been dropped.");
-                }
-                if (dmgl is null)
-                {
-                    if (mstat.TryGetLocalPath() is string path)
-                    {
-                        dmgl = await StorageProvider.TryGetFileFromPathAsync(Path.ChangeExtension(path, "scan.dgml.xml"));
-                    }
-                }
-
                 viewModel.Loading = true;
-                using var mstaDataToCompare = await Task.Run(async () => Read(await mstat.OpenReadAsync(), dmgl is null ? null : await dmgl.OpenReadAsync()))
-                    .ContinueWith(t =>
-                    {
-                        viewModel.Loading = false;
-                        return t.Result;
-                    }, TaskScheduler.FromCurrentSynchronizationContext());
+
+                var (mstatStream, dmglStream) = await ReadStatFilesAsync(result);
+                var mstaDataToCompare = Read(mstatStream, dmglStream);
                 var view = new DiffView(currentData, mstaDataToCompare);
                 Utils.ShowWindow(view);
             }
@@ -157,6 +126,10 @@ public partial class MainView : UserControl
         catch (Exception ex)
         {
             await PromptErrorAsync(ex.Message);
+        }
+        finally
+        {
+            viewModel.Loading = false;
         }
     }
 
@@ -318,5 +291,45 @@ public partial class MainView : UserControl
                        """
         };
         await dialog.ShowAsync();
+    }
+    
+    private async Task<(MemoryStream mstatStream, MemoryStream? dmglStream)> ReadStatFilesAsync(IReadOnlyList<IStorageItem> result)
+    {
+        var mstat = result.FirstOrDefault(i => i is IStorageFile
+        {
+            Name: [.., '.', 'm' or 'M', 's' or 'S', 't' or 'T', 'a' or 'A', 't' or 'T']
+        }) as IStorageFile;
+        var dmgl = result.FirstOrDefault(i => i is IStorageFile
+        {
+            Name:
+            [
+                .., '.', 's' or 'S', 'c' or 'C', 'a' or 'A', 'n' or 'N', '.', 'd' or 'D', 'g' or 'G', 'm' or 'M',
+                'l' or 'L', '.', 'x' or 'X', 'm' or 'M', 'l' or 'L'
+            ]
+        }) as IStorageFile;
+        if (mstat is null)
+        {
+            throw new InvalidOperationException("An invalid file has been dropped.");
+        }
+
+        if (dmgl is null)
+        {
+            if (mstat.TryGetLocalPath() is string path)
+            {
+                dmgl = await StorageProvider.TryGetFileFromPathAsync(Path.ChangeExtension(path, "scan.dgml.xml"));
+            }
+        }
+
+        MemoryStream mstatStream = null, dmglStream = null;
+        await using var mstatFileStream = await mstat.OpenReadAsync();
+        await mstatFileStream.CopyToAsync(mstatStream = new MemoryStream());
+
+        if (dmgl is not null)
+        {
+            await using var dmglFileStream = await dmgl.OpenReadAsync();
+            await dmglFileStream.CopyToAsync(dmglStream = new MemoryStream());
+        }
+
+        return (mstatStream, dmglStream);
     }
 }
