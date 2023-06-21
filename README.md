@@ -4,6 +4,10 @@ SizoscopeX is a binary size investigation tool to help you optimize and reduce t
 
 It supports visualizing the size contributions of individual methods and types, but also namespaces and assemblies. It also allows diffing before/after snapshots and offers basic root cause analysis.
 
+## Use SizoscopeX without Installing
+
+You can use the online version without installing: [SizoscopeX Online](https://hez2010.github.io/sizoscopeX/)
+
 ## Installing SizoscopeX
 
 ```shell
