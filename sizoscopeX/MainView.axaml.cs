@@ -32,32 +32,25 @@ public partial class MainView : UserControl
 
     private async void Drop(object? sender, DragEventArgs e)
     {
-        var currentFile = viewModel.File;
         try
         {
             e.DragEffects &= DragDropEffects.Copy;
             if (e.Data.Contains(DataFormats.Files))
             {
                 var files = e.Data.GetFiles()!.ToArray();
-                
+
                 var (mstatStream, dmglStream) = await ReadStatFilesAsync(files);
-                viewModel.File = (mstatStream, dmglStream);
+                await viewModel.LoadDataAsync(mstatStream, dmglStream);
             }
         }
         catch (Exception ex)
         {
             await PromptErrorAsync(ex.Message);
-            await Dispatcher.UIThread.InvokeAsync(() =>
-            {
-                viewModel.File = currentFile;
-                viewModel.Loading = false;
-            });
         }
     }
 
     public async void Open_Clicked(object? sender, RoutedEventArgs args)
     {
-        var currentFile = viewModel.File;
         try
         {
             var result = await StorageProvider.OpenFilePickerAsync(new()
@@ -70,17 +63,12 @@ public partial class MainView : UserControl
             {
                 var (mstatStream, dmglStream) = await ReadStatFilesAsync(result);
 
-                viewModel.File = (mstatStream, dmglStream);
+                await viewModel.LoadDataAsync(mstatStream, dmglStream);
             }
         }
         catch (Exception ex)
         {
             await PromptErrorAsync(ex.Message);
-            await Dispatcher.UIThread.InvokeAsync(() =>
-            {
-                viewModel.File = currentFile;
-                viewModel.Loading = false;
-            });
         }
     }
 
