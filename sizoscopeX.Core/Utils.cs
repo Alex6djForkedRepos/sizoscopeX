@@ -23,7 +23,8 @@ static class Utils
         switch (Avalonia.Application.Current)
         {
             case { ApplicationLifetime: IClassicDesktopStyleApplicationLifetime { MainWindow: FluentAppWindow window } desktop }:
-                window.Title = title;
+                if (window.OwnedWindows.LastOrDefault() is FluentAppWindow child) child.Title = title;
+                else window.Title = title;
                 break;
             case { ApplicationLifetime: ISingleViewApplicationLifetime { MainView: SingleTopView view } }:
                 view.Title.Text = title;
