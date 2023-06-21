@@ -23,7 +23,13 @@ public class App : Application
         }
         else if (ApplicationLifetime is ISingleViewApplicationLifetime singleViewPlatform)
         {
-            singleViewPlatform.MainView = new MainView();
+            singleViewPlatform.MainView = new SingleTopView
+            {
+                ContentFrame =
+                {
+                    Content = new MainView()
+                }
+            };
         };
 
         base.OnFrameworkInitializationCompleted();

@@ -24,19 +24,16 @@ namespace sizoscopeX
             DataContext = _viewModel;
             _viewModel.TitleChangedEvent += (obj, e) =>
             {
-                if (TopLevel.GetTopLevel(this) is Window window && obj is DiffViewModel vm)
+                if (obj is DiffViewModel vm)
                 {
-                    window.Title = vm.TitleString;
+                    Utils.SetTitle(vm.TitleString);
                 }
             };
         }
 
         protected override void OnLoaded()
         {
-            if (TopLevel.GetTopLevel(this) is Window window)
-            {
-                window.Title = _viewModel.TitleString;
-            }
+            Utils.SetTitle(_viewModel.TitleString);
             base.OnLoaded();
         }
 

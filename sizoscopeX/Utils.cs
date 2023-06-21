@@ -1,6 +1,5 @@
 ﻿using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
-using FluentAvalonia.UI.Controls;
 
 namespace sizoscopeX;
 
@@ -13,8 +12,21 @@ static class Utils
             case { ApplicationLifetime: IClassicDesktopStyleApplicationLifetime { MainWindow: not null } desktop }:
                 new FluentAppWindow() { Content = content }.ShowDialog(desktop.MainWindow);
                 break;
-            case { ApplicationLifetime: ISingleViewApplicationLifetime { MainView: Frame frame } }:
-                frame.Content = content;
+            case { ApplicationLifetime: ISingleViewApplicationLifetime { MainView: SingleTopView view } }:
+                view.NavigateTo(content);
+                break;
+        }
+    }
+
+    public static void SetTitle(string title)
+    {
+        switch (Avalonia.Application.Current)
+        {
+            case { ApplicationLifetime: IClassicDesktopStyleApplicationLifetime { MainWindow: FluentAppWindow window } desktop }:
+                window.Title = title;
+                break;
+            case { ApplicationLifetime: ISingleViewApplicationLifetime { MainView: SingleTopView view } }:
+                view.Title.Text = title;
                 break;
         }
     }

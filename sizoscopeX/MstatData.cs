@@ -4,7 +4,6 @@ using System.Reflection.Metadata;
 using System.Reflection.PortableExecutable;
 using System.Text;
 using System.Runtime.InteropServices;
-using Avalonia.Controls;
 
 public partial class MstatData : IDisposable
 {

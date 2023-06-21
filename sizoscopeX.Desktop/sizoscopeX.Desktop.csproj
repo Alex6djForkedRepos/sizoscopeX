@@ -7,6 +7,13 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <PublishAOT>true</PublishAOT>
+    <PublishTrimmed>true</PublishTrimmed>
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <TrimMode>full</TrimMode>
+  </PropertyGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\sizoscopeX\sizoscopeX.csproj" />
   </ItemGroup>

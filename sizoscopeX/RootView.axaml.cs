@@ -16,10 +16,8 @@ namespace sizoscopeX
 
         protected override void OnLoaded()
         {
-            if (TopLevel.GetTopLevel(this) is Window window)
-            {
-                window.Title = "Root View - sizoscopeX";
-            }
+            Utils.SetTitle("Root View - sizoscopeX");
+            base.OnLoaded();
         }
 
         public RootView(MstatData.Node node)

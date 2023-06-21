@@ -5,7 +5,6 @@ using Avalonia.Platform.Storage;
 using FluentAvalonia.UI.Controls;
 using Avalonia.Input;
 using static MstatData;
-using Avalonia.Threading;
 
 namespace sizoscopeX;
 
@@ -97,7 +96,7 @@ public partial class MainView : UserControl
         {
             var result = await StorageProvider.OpenFilePickerAsync(new()
             {
-                AllowMultiple = false,
+                AllowMultiple = true,
                 FileTypeFilter = new[] { new FilePickerFileType("Mstat and dgml files") { Patterns = filterPatterns } },
                 Title = "Select to compare"
             });
@@ -308,7 +307,7 @@ public partial class MainView : UserControl
             }
         }
 
-        MemoryStream mstatStream = null, dmglStream = null;
+        MemoryStream? mstatStream = null, dmglStream = null;
         await using var mstatFileStream = await mstat.OpenReadAsync();
         await mstatFileStream.CopyToAsync(mstatStream = new MemoryStream());
 

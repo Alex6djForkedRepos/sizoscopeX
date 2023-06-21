@@ -27,6 +27,8 @@ public class MainViewModel : INotifyPropertyChanged
     public ObservableCollection<TreeNode> Items { get; } = new();
     public ObservableCollection<SearchResultItem> SearchResult { get; } = new();
     public Sorter Sorter => SortMode is 0 ? Sorter.BySize() : Sorter.ByName();
+    public bool CanExit => !OperatingSystem.IsBrowser();
+
     public bool Loading
     {
         get => _loading;
