@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33414.496
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "sizoscopeX", "sizoscopeX.csproj", "{67B7AFF9-A81C-41AB-97BB-752EA54B2004}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "sizoscopeX", "sizoscopeX\sizoscopeX.csproj", "{67B7AFF9-A81C-41AB-97BB-752EA54B2004}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sizoscopeX.Desktop", "..\sizoscopeX.Desktop\sizoscopeX.Desktop.csproj", "{1B687D3C-1725-4147-B596-E43AF1260D3B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sizoscopeX.Desktop", "sizoscopeX.Desktop\sizoscopeX.Desktop.csproj", "{1B687D3C-1725-4147-B596-E43AF1260D3B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sizoscopeX.Browser", "..\sizoscopeX.Browser\sizoscopeX.Browser.csproj", "{2DE62C93-02FC-4F70-88D4-84154C157283}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sizoscopeX.Browser", "sizoscopeX.Browser\sizoscopeX.Browser.csproj", "{2DE62C93-02FC-4F70-88D4-84154C157283}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
