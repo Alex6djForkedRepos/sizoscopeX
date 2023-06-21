@@ -37,14 +37,14 @@
 					</Button>
 				</Border>
 			</Grid>
-			<TreeView ItemsSource="{Binding Items}" DoubleTapped="Tree_DoubleTapped" Grid.Row="1" IsVisible="{Binding File, Converter={x:Static ObjectConverters.IsNotNull},Mode=OneWay}">
+			<TreeView ItemsSource="{Binding Items}" DoubleTapped="Tree_DoubleTapped" Grid.Row="1" IsVisible="{Binding CurrentData, Converter={x:Static ObjectConverters.IsNotNull},Mode=OneWay}">
 				<TreeView.ItemTemplate>
 					<TreeDataTemplate ItemsSource="{Binding Nodes}">
 						<controls:TreeItemControl Type="{Binding Type}" Text="{Binding Name}" />
 					</TreeDataTemplate>
 				</TreeView.ItemTemplate>
 			</TreeView>
-			<Grid Grid.Row="1" IsVisible="{Binding File, Converter={x:Static ObjectConverters.IsNull},Mode=OneWay}">
+			<Grid Grid.Row="1" IsVisible="{Binding CurrentData, Converter={x:Static ObjectConverters.IsNull},Mode=OneWay}">
 				<StackPanel Margin="0,-40,0,0" HorizontalAlignment="Center" VerticalAlignment="Center">
 					<TextBlock FontSize="24" Text="Welcome" HorizontalAlignment="Center" />
 					<Button Margin="0,8,0,0" Content="Open a file to continue..." Click="Open_Clicked" HorizontalAlignment="Center" />

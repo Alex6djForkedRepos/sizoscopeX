@@ -16,10 +16,10 @@ public sealed class DiffViewModel : INotifyPropertyChanged
         var compareTree = new ObservableCollection<TreeNode>();
         Loading = true;
         TitleString = "Diff View - sizoscopeX";
-        Task.Run(() => Task.FromResult(MstatData.Diff(baseline, compare)))
-            .ContinueWith(t =>
+        _ = Utils.TaskRunIfPossible(() => MstatData.Diff(baseline, compare))
+            .ContinueOnMainThread(t =>
             {
-                (_baseline, _compare) = t.Result;
+                (_baseline, _compare) = t;
                 _diffSize = compare.Size - baseline.Size;
                 BaselineData = _baseline;
                 CompareData = _compare;
@@ -34,7 +34,7 @@ public sealed class DiffViewModel : INotifyPropertyChanged
                 TitleString = $"Diff View - Total accounted difference: {AsFileSize(_diffSize)} - sizoscopeX";
                 TitleChangedEvent?.Invoke(this, new());
                 Loading = false;
-            }, TaskScheduler.FromCurrentSynchronizationContext());
+            });
     }
 
     private int _baselineSortMode, _compareSortMode;

@@ -61,7 +61,7 @@ public partial class MstatData : IDisposable
             Marshal.FreeHGlobal(_peImage);
     }
 
-    public static unsafe MstatData Read(Stream mstat, Stream? dgml)
+    public static unsafe MstatData Read(MemoryStream mstat, MemoryStream? dgml)
     {
         mstat.Seek(0, SeekOrigin.Begin);
         int length = checked((int)mstat.Length);

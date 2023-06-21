@@ -18,7 +18,6 @@ public class MainViewModel : INotifyPropertyChanged
     public event PropertyChangedEventHandler? PropertyChanged;
 
     private MstatData? _data;
-    private (Stream Mstat, Stream? Dgml)? _file;
     private int _sortMode;
     private int _searchMode;
     private string? _searchPattern;
@@ -51,39 +50,6 @@ public class MainViewModel : INotifyPropertyChanged
     }
 
     public MstatData? CurrentData => _data;
-
-    public (Stream Mstat, Stream? Dgml)? File
-    {
-        get => _file;
-        set
-        {
-            if (value != _file)
-            {
-                _file?.Mstat?.Dispose();
-                _file?.Dgml?.Dispose();
-                _file = value;
-                PropertyChanged?.Invoke(this, new(nameof(File)));
-                _data?.Dispose();
-                if (value is null)
-                {
-                    _data = null;
-                    Items.Clear();
-                    SearchResult.Clear();
-                    return;
-                }
-                Loading = true;
-                Task.Run(() => Task.FromResult(Read(value.Value.Mstat, value.Value.Dgml)))
-                    .ContinueWith(t =>
-                    {
-                        _data = t.Result;
-                        PropertyChanged?.Invoke(this, new(nameof(DataFileSize)));
-                        RefreshTree(Items, _data, Sorter);
-                        RefreshSearch();
-                        Loading = false;
-                    }, TaskScheduler.FromCurrentSynchronizationContext());
-            }
-        }
-    }
 
     public int SortMode
     {
@@ -134,6 +100,37 @@ public class MainViewModel : INotifyPropertyChanged
 
     public string? DataFileSize => AsFileSize(CurrentData?.Size ?? 0);
 
+    public void ClearData()
+    {
+        _data?.Dispose();
+        _data = null;
+        Items.Clear();
+        SearchResult.Clear();
+    }
+    
+    public async Task LoadDataAsync(MemoryStream Mstat, MemoryStream? Dgml)
+    {
+        Loading = true;
+        try
+        {
+            var newData = await Utils.TaskRunIfPossible(() => Read(Mstat, Dgml));
+            
+            _data?.Dispose();
+            _data = newData;
+            Items.Clear();
+            SearchResult.Clear();
+            
+            PropertyChanged?.Invoke(this, new(nameof(DataFileSize)));
+            PropertyChanged?.Invoke(this, new(nameof(CurrentData)));
+            RefreshTree(Items, _data, Sorter);
+            RefreshSearch();
+        }
+        finally
+        {
+            Loading = false;
+        }
+    }
+    
     private void ExecuteSearch(object? sender, EventArgs args)
     {
         _searchDebouncer.Stop();
