@@ -5,7 +5,6 @@ using Avalonia.Platform.Storage;
 using FluentAvalonia.UI.Controls;
 using Avalonia.Input;
 using static MstatData;
-using System.Runtime.CompilerServices;
 
 namespace sizoscopeX.Core;
 
