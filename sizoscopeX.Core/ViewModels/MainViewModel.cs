@@ -109,30 +109,22 @@ public class MainViewModel : INotifyPropertyChanged
         Items.Clear();
         SearchResult.Clear();
     }
-    
+
     public async Task LoadDataAsync(MemoryStream Mstat, MemoryStream? Dgml)
     {
-        Loading = true;
-        try
-        {
-            var newData = await Utils.TaskRunIfPossible(() => Read(Mstat, Dgml));
-            
-            _data?.Dispose();
-            _data = newData;
-            Items.Clear();
-            SearchResult.Clear();
-            
-            PropertyChanged?.Invoke(this, new(nameof(DataFileSize)));
-            PropertyChanged?.Invoke(this, new(nameof(CurrentData)));
-            RefreshTree(Items, _data, Sorter);
-            RefreshSearch();
-        }
-        finally
-        {
-            Loading = false;
-        }
+        var newData = await Utils.TaskRunIfPossible(() => Read(Mstat, Dgml));
+
+        _data?.Dispose();
+        _data = newData;
+        Items.Clear();
+        SearchResult.Clear();
+
+        PropertyChanged?.Invoke(this, new(nameof(DataFileSize)));
+        PropertyChanged?.Invoke(this, new(nameof(CurrentData)));
+        RefreshTree(Items, _data, Sorter);
+        RefreshSearch();
     }
-    
+
     private void ExecuteSearch(object? sender, EventArgs args)
     {
         _searchDebouncer.Stop();

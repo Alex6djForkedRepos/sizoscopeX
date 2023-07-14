@@ -5,6 +5,7 @@ using Avalonia.Platform.Storage;
 using FluentAvalonia.UI.Controls;
 using Avalonia.Input;
 using static MstatData;
+using System.Runtime.CompilerServices;
 
 namespace sizoscopeX.Core;
 
@@ -36,15 +37,21 @@ public partial class MainView : UserControl
             e.DragEffects &= DragDropEffects.Copy;
             if (e.Data.Contains(DataFormats.Files))
             {
-                var files = e.Data.GetFiles()!.ToArray();
-
-                var (mstatStream, dmglStream) = await ReadStatFilesAsync(files);
-                await viewModel.LoadDataAsync(mstatStream, dmglStream);
+                var files = e.Data.GetFiles()?.OfType<IStorageFile>().ToArray();
+                if (files is not null)
+                {
+                    viewModel.Loading = true;
+                    await LoadForBaseAsync(files);
+                }
             }
         }
         catch (Exception ex)
         {
             await PromptErrorAsync(ex.Message);
+        }
+        finally
+        {
+            viewModel.Loading = false;
         }
     }
 
@@ -60,14 +67,47 @@ public partial class MainView : UserControl
             });
             if (result.Any())
             {
-                var (mstatStream, dmglStream) = await ReadStatFilesAsync(result);
-
-                await viewModel.LoadDataAsync(mstatStream, dmglStream);
+                viewModel.Loading = true;
+                await LoadForBaseAsync(result);
             }
         }
         catch (Exception ex)
         {
             await PromptErrorAsync(ex.Message);
+        }
+        finally
+        {
+            viewModel.Loading = false;
+        }
+    }
+
+    public async Task OpenFromPathAsync(string mstatFile, string? mstatFileForDiff = null)
+    {
+        try
+        {
+            viewModel.Loading = true;
+            var result = await StorageProvider.TryGetFileFromPathAsync(mstatFile);
+            if (result is not null)
+            {
+                await LoadForBaseAsync(new[] { result });
+            }
+
+            if (mstatFileForDiff is not null)
+            {
+                result = await StorageProvider.TryGetFileFromPathAsync(mstatFileForDiff);
+                if (result is not null)
+                {
+                    await LoadForDiffAsync(viewModel.CurrentData!, new[] { result });
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            await PromptErrorAsync(ex.Message);
+        }
+        finally
+        {
+            viewModel.Loading = false;
         }
     }
 
@@ -103,11 +143,7 @@ public partial class MainView : UserControl
             if (result.Any())
             {
                 viewModel.Loading = true;
-
-                var (mstatStream, dmglStream) = await ReadStatFilesAsync(result);
-                var mstaDataToCompare = Read(mstatStream, dmglStream);
-                var view = new DiffView(currentData, mstaDataToCompare);
-                Utils.ShowWindow(view);
+                await LoadForDiffAsync(currentData, result);
             }
         }
         catch (Exception ex)
@@ -118,6 +154,20 @@ public partial class MainView : UserControl
         {
             viewModel.Loading = false;
         }
+    }
+
+    private async Task LoadForBaseAsync(IReadOnlyList<IStorageFile> result)
+    {
+        var (mstatStream, dmglStream) = await ReadStatFilesAsync(result);
+        await viewModel.LoadDataAsync(mstatStream, dmglStream);
+    }
+
+    private async Task LoadForDiffAsync(MstatData currentData, IReadOnlyList<IStorageFile> files)
+    {
+        var (mstatStream, dmglStream) = await ReadStatFilesAsync(files);
+        var mstaDataToCompare = Read(mstatStream, dmglStream);
+        var view = new DiffView(currentData, mstaDataToCompare);
+        Utils.ShowWindow(view);
     }
 
     public void Refresh_Clicked(object? sender, RoutedEventArgs args)
@@ -279,7 +329,7 @@ public partial class MainView : UserControl
         };
         await dialog.ShowAsync();
     }
-    
+
     private async Task<(MemoryStream mstatStream, MemoryStream? dmglStream)> ReadStatFilesAsync(IReadOnlyList<IStorageItem> result)
     {
         var mstat = result.FirstOrDefault(i => i is IStorageFile

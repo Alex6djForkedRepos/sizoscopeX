@@ -25,7 +25,7 @@ The tool only supports the [Native AOT deployment model](https://learn.microsoft
 </PropertyGroup>
 ```
 
-Once you have that, `dotnet publish` your project as usual. After publishing, you should see a *.mstat and *.dgml.xml file under `obj\Release\net[7|8].0\[linux|win]-[x64|arm64]\native` - these are the files Sizoscope operates on.
+Once you have that, `dotnet publish` your project as usual. After publishing, you should see a *.mstat and *.dgml.xml file under `obj\Release\net[7|8].0\[linux|win]-[x64|arm64]\native` - these are the files SizoscopeX operates on.
 
 Launch the tool and open the MSTAT file. The associated *.dgml.xml file will be loaded automatically if it's next to the *.mstat. If the *.dgml.xml doesn't exist, root cause analysis will not work.
 
@@ -53,6 +53,6 @@ In the above screenshot, the reason why the top node was included in the executa
 
 ## Tips and tricks
 
-* Passing a MSTAT file name on the command line will launch Sizoscope with the file open. You can associated *.mstat files with Sizoscope in shell.
+* Passing a MSTAT file name on the command line will launch SizoscopeX with the file open. You can associated *.mstat files with SizoscopeX in shell.
 * You can drag and drop .mstat files into the UI to open them.
 * MSTAT files are loaded to memory and the associated file system files are closed. This is done on purpose so that you can quickly do before/after comparisons: simply open the MSTAT, make your change to the project and re-publish, and do a diff _against the same file_.
