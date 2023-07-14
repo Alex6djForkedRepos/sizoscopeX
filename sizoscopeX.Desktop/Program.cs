@@ -16,11 +16,6 @@ internal static class Program
         => AppBuilder.Configure<App>()
             .UsePlatformDetect()
             .LogToTrace()
-            .With(new Win32PlatformOptions()
-            {
-                UseWindowsUIComposition = true,
-                CompositionBackdropCornerRadius = 8f
-            })
             .With(new MacOSPlatformOptions()
             {
                 DisableDefaultApplicationMenuItems = true

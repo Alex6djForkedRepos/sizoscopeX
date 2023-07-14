@@ -1,4 +1,5 @@
 using Avalonia.Controls;
+using Avalonia.Interactivity;
 using sizoscopeX.Core.ViewModels;
 
 namespace sizoscopeX.Core
@@ -14,10 +15,10 @@ namespace sizoscopeX.Core
             _viewModel = default!;
         }
 
-        protected override void OnLoaded()
+        protected override void OnLoaded(RoutedEventArgs e)
         {
             Utils.SetTitle("Root View - sizoscopeX");
-            base.OnLoaded();
+            base.OnLoaded(e);
         }
 
         public RootView(MstatData.Node node)

@@ -1,5 +1,6 @@
 using Avalonia.Controls;
 using Avalonia.Input;
+using Avalonia.Interactivity;
 using FluentAvalonia.UI.Controls;
 using sizoscopeX.Core.ViewModels;
 using static MstatData;
@@ -31,10 +32,10 @@ namespace sizoscopeX.Core
             };
         }
 
-        protected override void OnLoaded()
+        protected override void OnLoaded(RoutedEventArgs e)
         {
             Utils.SetTitle(_viewModel.TitleString);
-            base.OnLoaded();
+            base.OnLoaded(e);
         }
 
         private async void Tree_DoubleTapped(object? sender, TappedEventArgs args)
