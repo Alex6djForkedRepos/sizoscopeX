@@ -1,0 +1,64 @@
+name: Build and Deploy
+
+on: 
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version'     
+        required: true
+      nuget:
+        description: 'Push to Nuget'
+        required: true
+        type: boolean
+      gh_pages:
+        description: 'Deploy to GitHub Pages'
+        required: true
+        type: boolean
+  
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 7.0.x
+    - name: Install Workload
+      run: dotnet workload install wasm-tools
+    - name: Build for Desktop
+      run: dotnet pack sizoscopeX.Desktop -c Release -o packages /p:Version=${{ github.event.inputs.version }}
+    - name: Push to Nuget
+      if: ${{ github.event.inputs.nuget == 'true' }}
+      run: dotnet nuget push ./packages/*.nupkg -s https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_API_KEY }}
+    - name: Build for Browser
+      run: dotnet publish sizoscopeX.Browser -c Release /p:Version=${{ github.event.inputs.version }}
+    - name: Fix Permissions
+      run: |
+        chmod -v -R +rX "./sizoscopeX.Browser/bin/Release/net7.0/browser-wasm/AppBundle/" | while read line; do
+          echo "::warning title=Invalid file permissions automatically fixed::$line"
+        done
+    - name: Upload Broswer AppBundle
+      uses: actions/upload-pages-artifact@v2
+      with:
+        path: './sizoscopeX.Browser/bin/Release/net7.0/browser-wasm/AppBundle'
+
+  deploy:
+    needs: build
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    permissions:
+      pages: write
+      id-token: write
+
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Deploy to GitHub Pages
+      id: deployment
+      if: ${{ github.event.inputs.gh_pages == 'true' }}
+      uses: actions/deploy-pages@v2
+  
