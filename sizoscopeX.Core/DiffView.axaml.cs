@@ -63,7 +63,7 @@ namespace sizoscopeX.Core
                         Title = "Error",
                         Content = "Dependency graph information is only available in .NET 8 Preview 4 or later."
                     };
-                    await dialog.ShowAsync();
+                    await dialog.ShowAsync(TopLevel.GetTopLevel(this));
                     return;
                 }
 
@@ -76,7 +76,7 @@ namespace sizoscopeX.Core
                         Title = "Error",
                         Content = "Unable to load dependency graph. Was IlcGenerateDgmlFile=true specified?"
                     };
-                    await dialog.ShowAsync();
+                    await dialog.ShowAsync(TopLevel.GetTopLevel(this));
                     return;
                 }
 

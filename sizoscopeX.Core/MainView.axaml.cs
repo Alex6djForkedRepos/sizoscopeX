@@ -112,14 +112,14 @@ public partial class MainView : UserControl
 
     private IStorageProvider StorageProvider => TopLevel.GetTopLevel(this)?.StorageProvider ?? throw new InvalidOperationException("Invalid owner.");
 
-    private static async Task PromptErrorAsync(string message)
+    private async Task PromptErrorAsync(string message)
     {
         await new ContentDialog
         {
             CloseButtonText = "OK",
             Title = "Error",
             Content = message
-        }.ShowAsync();
+        }.ShowAsync(TopLevel.GetTopLevel(this));
     }
 
     public async void Diff_Clicked(object? sender, RoutedEventArgs args)
@@ -294,7 +294,7 @@ public partial class MainView : UserControl
                        SOFTWARE.
                        """
         };
-        await dialog.ShowAsync();
+        await dialog.ShowAsync(TopLevel.GetTopLevel(this));
     }
 
     public async void About_Clicked(object? sender, RoutedEventArgs args)
@@ -326,7 +326,7 @@ public partial class MainView : UserControl
                        along with this program.  If not, see <https://www.gnu.org/licenses/>.
                        """
         };
-        await dialog.ShowAsync();
+        await dialog.ShowAsync(TopLevel.GetTopLevel(this));
     }
 
     private async Task<(MemoryStream mstatStream, MemoryStream? dmglStream)> ReadStatFilesAsync(IReadOnlyList<IStorageItem> result)
