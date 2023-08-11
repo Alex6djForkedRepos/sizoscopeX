@@ -1,4 +1,5 @@
 ﻿using Avalonia;
+using Avalonia.Media;
 using sizoscopeX.Core;
 
 namespace sizoscopeX.Desktop;
@@ -15,9 +16,14 @@ internal static class Program
     public static AppBuilder BuildAvaloniaApp()
         => AppBuilder.Configure<App>()
             .UsePlatformDetect()
+            .WithInterFont()
             .LogToTrace()
             .With(new MacOSPlatformOptions()
             {
                 DisableDefaultApplicationMenuItems = true
+            })
+            .With(new FontManagerOptions
+            {
+                DefaultFamilyName = "avares://Avalonia.Fonts.Inter/Assets#Inter"
             });
 }
