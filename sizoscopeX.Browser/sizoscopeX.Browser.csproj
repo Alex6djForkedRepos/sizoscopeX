@@ -16,6 +16,8 @@
     <TrimMode>full</TrimMode>
     <EmccCompileOptimizationFlag>-O2</EmccCompileOptimizationFlag>
     <EmccLinkOptimizationFlag>-O2</EmccLinkOptimizationFlag>
+    <WasmStripILAfterAOT>true</WasmStripILAfterAOT>
+    <WasmAllowUndefinedSymbols>true</WasmAllowUndefinedSymbols>
   </PropertyGroup>
 
   <ItemGroup>
@@ -23,8 +25,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Avalonia.Browser" Version="11.0.3" />
-    <PackageReference Include="Avalonia.Fonts.Inter" Version="11.0.3" />
+    <PackageReference Include="Avalonia.Browser" Version="11.0.4" />
+    <PackageReference Include="Avalonia.Fonts.Inter" Version="11.0.4" />
   </ItemGroup>
 
   <ItemGroup>

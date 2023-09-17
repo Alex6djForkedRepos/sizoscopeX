@@ -5,6 +5,7 @@ using Avalonia.Platform.Storage;
 using FluentAvalonia.UI.Controls;
 using Avalonia.Input;
 using static MstatData;
+using System.Reflection;
 
 namespace sizoscopeX.Core;
 
@@ -303,7 +304,9 @@ public partial class MainView : UserControl
         {
             CloseButtonText = "OK",
             Title = "About",
-            Content = """
+            Content = $"""
+                       sizoscopeX - {Assembly.GetEntryAssembly()?.GetName().Version}
+
                        Copyright (c) 2023 Michal Strehovsky
                        Copyright (c) 2023 hez2010
 

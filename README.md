@@ -1,20 +1,20 @@
-# SizoscopeX
+# sizoscopeX
 
-SizoscopeX is a binary size investigation tool to help you optimize and reduce the size of your .NET Native AOT binaries.
+sizoscopeX is a binary size investigation tool to help you optimize and reduce the size of your .NET Native AOT binaries.
 
 It supports visualizing the size contributions of individual methods and types, but also namespaces and assemblies. It also allows diffing before/after snapshots and offers basic root cause analysis.
 
-## Use SizoscopeX without Installing
+## Use sizoscopeX without Installing
 
-You can use the online version without installing: [SizoscopeX Online](https://hez2010.github.io/sizoscopeX/)
+You can use the online version without installing: [sizoscopeX Online](https://hez2010.github.io/sizoscopeX/)
 
-## Installing SizoscopeX
+## Installing sizoscopeX
 
 ```shell
 $ dotnet tool install sizoscopeX --global
 ```
 
-## Using SizoscopeX
+## Using sizoscopeX
 
 The tool only supports the [Native AOT deployment model](https://learn.microsoft.com/dotnet/core/deploying/native-aot/) in .NET 7 or later. After enabling Native AOT deployment on your project as documented in the linked doc (basically, add `<PublishAot>true</PublishAot>` to a `PropertyGroup` in your project), add following lines to the project to enable generation of additional compile-time diagnostic files:
 
@@ -25,7 +25,7 @@ The tool only supports the [Native AOT deployment model](https://learn.microsoft
 </PropertyGroup>
 ```
 
-Once you have that, `dotnet publish` your project as usual. After publishing, you should see a *.mstat and *.dgml.xml file under `obj\Release\net[7|8].0\[linux|win]-[x64|arm64]\native` - these are the files SizoscopeX operates on.
+Once you have that, `dotnet publish` your project as usual. After publishing, you should see a *.mstat and *.dgml.xml file under `obj\Release\net[7|8].0\[linux|win]-[x64|arm64]\native` - these are the files sizoscopeX operates on.
 
 Launch the tool and open the MSTAT file. The associated *.dgml.xml file will be loaded automatically if it's next to the *.mstat. If the *.dgml.xml doesn't exist, root cause analysis will not work.
 
@@ -53,6 +53,6 @@ In the above screenshot, the reason why the top node was included in the executa
 
 ## Tips and tricks
 
-* Passing a MSTAT file name on the command line will launch SizoscopeX with the file open. You can associated *.mstat files with SizoscopeX in shell.
+* Passing a MSTAT file name on the command line will launch sizoscopeX with the file open. You can associated *.mstat files with sizoscopeX in shell.
 * You can drag and drop .mstat files into the UI to open them.
 * MSTAT files are loaded to memory and the associated file system files are closed. This is done on purpose so that you can quickly do before/after comparisons: simply open the MSTAT, make your change to the project and re-publish, and do a diff _against the same file_.
