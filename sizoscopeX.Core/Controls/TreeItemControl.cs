@@ -14,6 +14,9 @@ public class TreeItemControl : TemplatedControl
     private const string pcClass = ":class";
     private const string pcMethod = ":method";
     private const string pcInstantiation = ":instantiation";
+    private const string pcFrozenData = ":frozenData";
+    private const string pcResource = ":resource";
+    private const string pcField = ":field";
 
     public static readonly StyledProperty<string?> TextProperty = AvaloniaProperty.Register<TreeItemControl, string?>(nameof(Text));
     public static readonly StyledProperty<NodeType?> TypeProperty = AvaloniaProperty.Register<TreeItemControl, NodeType?>(nameof(Type));
@@ -44,6 +47,9 @@ public class TreeItemControl : TemplatedControl
         PseudoClasses.Set(pcClass, type is NodeType.Class);
         PseudoClasses.Set(pcMethod, type is NodeType.Method);
         PseudoClasses.Set(pcInstantiation, type is NodeType.Instantiation);
+        PseudoClasses.Set(pcFrozenData, type is NodeType.FrozenData);
+        PseudoClasses.Set(pcResource, type is NodeType.Resource);
+        PseudoClasses.Set(pcField, type is NodeType.Field);
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)

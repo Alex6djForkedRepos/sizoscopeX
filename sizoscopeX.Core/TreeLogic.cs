@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Reflection.Metadata;
 using static MstatData;
+using static sizoscopeX.Core.TreeLogic;
 
 namespace sizoscopeX.Core
 {
@@ -9,6 +10,15 @@ namespace sizoscopeX.Core
         public static void RefreshTree(ObservableCollection<TreeNode> items, MstatData data, Sorter sorter)
         {
             items.Clear();
+
+            if (data.UnownedFrozenObjectSize > 0)
+            {
+                items.Add(new TreeNode($"Frozen objects ({AsFileSize(data.UnownedFrozenObjectSize)})", NodeType.FrozenData, sorter)
+                {
+                    Tag = data
+                });
+            }
+
             var asms = data.GetScopes();
             foreach (var asm in sorter.Sort(asms))
             {
@@ -21,16 +31,45 @@ namespace sizoscopeX.Core
                     continue;
 
                 string name = $"{asm.Name} ({AsFileSize(asm.AggregateSize)})";
-                TreeNode node = new TreeNode(name, 0, sorter);
-                node.Tag = asm;
+                TreeNode node = new TreeNode(name, 0, sorter)
+                {
+                    Tag = asm
+                };
                 items.Add(node);
             }
         }
 
         public static void Expand(TreeNode node)
         {
-            if (node.Tag is MstatAssembly asm)
+            if (node is { Tag: MstatData mstat, Type: NodeType.FrozenData })
             {
+                foreach (var frozenObj in node.Sorter.Sort(mstat.GetFrozenObjects()))
+                {
+                    node.Nodes.Add(new TreeNode($"Instance of {frozenObj} ({AsFileSize(frozenObj.Size)})", NodeType.FrozenData, node.Sorter)
+                    {
+                        Tag = frozenObj.NodeId,
+                    });
+                }
+            }
+            else if (node is { Tag: MstatAssembly resourceAssembly, Type: NodeType.Resource })
+            {
+                foreach (var res in node.Sorter.Sort(resourceAssembly.GetManifestResources().Select(r => (r.Name, r.Size))))
+                {
+                    string name = $"{res.Name} ({AsFileSize(res.AggregateSize)})";
+                    var newNode = new TreeNode(name, NodeType.Resource, node.Sorter);
+                    node.Nodes.Add(newNode);
+                }
+            }
+            else if (node is { Tag: MstatAssembly asm })
+            {
+                if (asm.GetManifestResources().MoveNext())
+                {
+                    string name = "Resources";
+                    var newNode = new TreeNode(name, NodeType.Resource, node.Sorter);
+                    newNode.Tag = asm;
+                    node.Nodes.Add(newNode);
+                }
+
                 var namespacesAndSizes = asm.GetTypes()
                     .Where(t => t.Namespace.Length > 0)
                     .GroupBy(t => t.Namespace)
@@ -45,11 +84,31 @@ namespace sizoscopeX.Core
 
                 AppendTypes(node, asm.GetTypes(), d => d.Namespace.Length == 0);
             }
-            else if (node.Tag is (MstatAssembly a, string ns))
+            else if (node is { Tag: (MstatAssembly a, string ns) })
             {
                 AppendTypes(node, a.GetTypes(), d => d.Namespace == ns);
             }
-            else if (node.Tag is MstatTypeDefinition genericDef && node.Type == NodeType.Instantiation)
+            else if (node is { Tag: MstatTypeDefinition frozenDef, Type: NodeType.FrozenData })
+            {
+                foreach (var frozenObj in node.Sorter.Sort(frozenDef.GetFrozenObjects()))
+                {
+                    node.Nodes.Add(new TreeNode($"Instance of {frozenObj} ({AsFileSize(frozenObj.Size)})", NodeType.FrozenData, node.Sorter)
+                    {
+                        Tag = frozenObj.NodeId,
+                    });
+                }
+            }
+            else if (node is { Tag: MstatTypeSpecification frozenSpec, Type: NodeType.FrozenData })
+            {
+                foreach (var frozenObj in node.Sorter.Sort(frozenSpec.GetFrozenObjects()))
+                {
+                    node.Nodes.Add(new TreeNode($"Instance of {frozenObj} ({AsFileSize(frozenObj.Size)})", NodeType.FrozenData, node.Sorter)
+                    {
+                        Tag = frozenObj.NodeId,
+                    });
+                }
+            }
+            else if (node is { Tag: MstatTypeDefinition genericDef, Type: NodeType.Instantiation })
             {
                 foreach (var inst in node.Sorter.Sort(genericDef.GetTypeSpecifications()))
                 {
@@ -60,12 +119,24 @@ namespace sizoscopeX.Core
                     node.Nodes.Add(newNode);
                 }
             }
-            else if (node.Tag is MstatTypeSpecification spec)
+            else if (node is { Tag: MstatTypeSpecification spec })
             {
+                if (spec.GetFrozenObjects().MoveNext())
+                {
+                    TreeNode newNode = new TreeNode("Frozen objects", NodeType.FrozenData, node.Sorter);
+                    newNode.Tag = spec;
+                    node.Nodes.Add(newNode);
+                }
                 AppendMembers(node, spec.GetMembers());
             }
-            else if (node.Tag is MstatTypeDefinition def)
+            else if (node is { Tag: MstatTypeDefinition def })
             {
+                if (def.GetFrozenObjects().MoveNext())
+                {
+                    TreeNode newNode = new TreeNode("Frozen objects", NodeType.FrozenData, node.Sorter);
+                    newNode.Tag = def;
+                    node.Nodes.Add(newNode);
+                }
                 if (def.GetTypeSpecifications().MoveNext())
                 {
                     TreeNode newNode = new TreeNode("Instantiations", NodeType.Instantiation, node.Sorter);
@@ -75,7 +146,7 @@ namespace sizoscopeX.Core
                 AppendTypes(node, def.GetNestedTypes(), x => true);
                 AppendMembers(node, def.GetMembers());
             }
-            else if (node.Tag is MstatMemberDefinition memberDef)
+            else if (node is { Tag: MstatMemberDefinition memberDef })
             {
                 foreach (var inst in memberDef.GetInstantiations())
                 {
@@ -102,7 +173,7 @@ namespace sizoscopeX.Core
                 foreach (var t in node.Sorter.Sort(list))
                 {
                     string name = $"{t} ({AsFileSize(t.AggregateSize)})";
-                    var n = new TreeNode(name, NodeType.Method, node.Sorter);
+                    var n = new TreeNode(name, t.IsField ? NodeType.Field : NodeType.Method, node.Sorter);
                     n.Tag = t;
                     node.Nodes.Add(n);
                 }
@@ -110,7 +181,7 @@ namespace sizoscopeX.Core
         }
 
         public static string AsFileSize(int size)
-            => size switch
+            => Math.Abs(size) switch
             {
                 < 1024 => $"{size:F0} B",
                 < 1024 * 1024 => $"{size / 1024f:F1} kB",
@@ -159,6 +230,21 @@ namespace sizoscopeX.Core
                 {
                     "Name" => members.OrderBy(t => t.Name),
                     "Size" => members.OrderByDescending(t => t.AggregateSize),
+                    _ => members
+                };
+            public IEnumerable<MstatFrozenObject> Sort(IEnumerable<MstatFrozenObject> frozenObjects)
+                => Key switch
+                {
+                    "Name" => frozenObjects.OrderBy(t => t.ToString()),
+                    "Size" => frozenObjects.OrderByDescending(t => t.Size),
+                    _ => frozenObjects
+                };
+
+            public IEnumerable<(string Name, int Size, int Id)> Sort(IEnumerable<(string Name, int Size, int Id)> members)
+                => Key switch
+                {
+                    "Name" => members.OrderBy(t => t.Name),
+                    "Size" =>members.OrderByDescending(t => t.Size),
                     _ => members
                 };
 

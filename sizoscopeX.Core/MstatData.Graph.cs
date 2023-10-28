@@ -5,18 +5,23 @@ using System.Xml.Linq;
 
 partial class MstatData
 {
-    private Dictionary<string, Node>? _nameToNode;
+    private Dictionary<string, Node> _nameToNode;
 
-    public Node? GetNodeForId(int id)
+    public bool DgmlSupported => _version.Major >= 2;
+    public bool DgmlAvailable => DgmlSupported && _nameToNode != null;
+
+    public string GetNameForId(int id)
     {
-        if (_version.Major < 2 || _nameToNode == null)
-            return null;
-
         PEMemoryBlock nameMap = _peReader.GetSectionData(".names");
         BlobReader nameMapReader = nameMap.GetReader();
         nameMapReader.Offset = id;
-        string name = nameMapReader.ReadSerializedString()!;
-        return _nameToNode.GetValueOrDefault(name);
+        return nameMapReader.ReadSerializedString()!;
+    }
+
+    public Node GetNodeForId(int id, out string name)
+    {
+        name = GetNameForId(id);
+        return _nameToNode.GetValueOrDefault(name)!;
     }
 
     private void LoadAssociatedDgmlFile(Stream stream)

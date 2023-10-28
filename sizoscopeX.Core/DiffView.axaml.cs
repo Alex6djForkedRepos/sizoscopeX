@@ -67,7 +67,7 @@ namespace sizoscopeX.Core
                     return;
                 }
 
-                var node = currentData.GetNodeForId(id.Value);
+                var node = currentData.GetNodeForId(id.Value, out _);
                 if (node == null)
                 {
                     var dialog = new ContentDialog

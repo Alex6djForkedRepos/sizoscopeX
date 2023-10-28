@@ -7,6 +7,9 @@ partial class MstatData
     public Enumerator<AssemblyReferenceHandle, MstatAssembly, MoveToNextScope> GetScopes()
         => new Enumerator<AssemblyReferenceHandle, MstatAssembly, MoveToNextScope>(this, MetadataTokens.AssemblyReferenceHandle(1));
 
+    public Enumerator<FrozenObjectHandle, MstatFrozenObject, MoveToNextFrozenObject> GetFrozenObjects()
+        => new Enumerator<FrozenObjectHandle, MstatFrozenObject, MoveToNextFrozenObject>(this, _firstUnownedFrozenObject);
+
     public interface ICanMoveNext<THandle, TRecord>
     {
         bool IsNil(THandle handle);
@@ -51,10 +54,24 @@ partial class MstatData
         public MethodSpecificationHandle MoveNext(MstatData data, MethodSpecificationHandle current) => data.GetRowCache(current).NextMethodSpec;
     }
 
+    public struct MoveToNextManifestResource : ICanMoveNext<ManifestResourceHandle, MstatManifestResource>
+    {
+        public bool IsNil(ManifestResourceHandle handle) => handle.IsNil;
+        public MstatManifestResource GetCurrent(MstatData data, ManifestResourceHandle handle) => new MstatManifestResource(data, handle);
+        public ManifestResourceHandle MoveNext(MstatData data, ManifestResourceHandle current) => data.GetRowCache(current).NextManifestResource;
+    }
+
+    public struct MoveToNextFrozenObject : ICanMoveNext<FrozenObjectHandle, MstatFrozenObject>
+    {
+        public bool IsNil(FrozenObjectHandle handle) => handle == 0;
+        public MstatFrozenObject GetCurrent(MstatData data, FrozenObjectHandle handle) => new MstatFrozenObject(data, handle);
+        public FrozenObjectHandle MoveNext(MstatData data, FrozenObjectHandle current) => data.GetRowCache(current).NextFrozenObject;
+    }
+
     public struct Enumerator<THandle, TRecord, TNext> : IEnumerable<TRecord>, IEnumerator<TRecord>
+        where TNext : struct, ICanMoveNext<THandle, TRecord>
         where THandle : struct
         where TRecord : struct
-        where TNext : struct, ICanMoveNext<THandle, TRecord>
     {
         private readonly MstatData _data;
         private readonly THandle _first;
