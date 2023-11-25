@@ -61,7 +61,7 @@ namespace sizoscopeX.Core
                     {
                         CloseButtonText = "OK",
                         Title = "Error",
-                        Content = "Dependency graph information is only available in .NET 8 Preview 4 or later."
+                        Content = "Dependency graph information is only available in .NET 8 or later."
                     };
                     await dialog.ShowAsync(TopLevel.GetTopLevel(this));
                     return;

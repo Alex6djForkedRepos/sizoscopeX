@@ -199,7 +199,7 @@ public partial class MainView : UserControl
         {
             if (id.Value < 0)
             {
-                await PromptErrorAsync("Dependency graph information is only available in .NET 8 Preview 4 or later.");
+                await PromptErrorAsync("Dependency graph information is only available in .NET 8 or later.");
                 return;
             }
 
