@@ -10,12 +10,16 @@
     <PublishTrimmed>true</PublishTrimmed>
     <InvariantGlobalization>true</InvariantGlobalization>
     <NativeDebugSymbols>false</NativeDebugSymbols>
+    <StackTraceSupport>false</StackTraceSupport>
+    <DebugType>none</DebugType>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <IlcHostPackagePath>$(Pkgruntime_win-x64_Microsoft_DotNet_ILCompiler_LLVM)</IlcHostPackagePath>
+    <IlcHostPackagePath Condition="'$([MSBuild]::IsOSPlatform(&quot;Windows&quot;))' == 'true'">$(Pkgruntime_win-x64_Microsoft_DotNet_ILCompiler_LLVM)</IlcHostPackagePath>
+    <IlcHostPackagePath Condition="'$([MSBuild]::IsOSPlatform(&quot;Windows&quot;))' == 'false'">$(Pkgruntime_linux-x64_Microsoft_DotNet_ILCompiler_LLVM)</IlcHostPackagePath>
     <UseAppHost>false</UseAppHost>
     <UsingBrowserRuntimeWorkload>false</UsingBrowserRuntimeWorkload>
     <UsingWasiRuntimeWorkload>false</UsingWasiRuntimeWorkload>
     <UsingEmscriptenWorkload>true</UsingEmscriptenWorkload>
+    <NoWarn>$(NoWarn);AVA3001</NoWarn>
   </PropertyGroup>
   
   <ItemGroup>
@@ -36,7 +40,8 @@
     <ProjectReference Include="..\Avalonia.Browser\Avalonia.Browser.csproj" />
     <PackageReference Include="Avalonia.Fonts.Inter" />
     <PackageReference Include="Microsoft.DotNet.ILCompiler.LLVM" />
-    <PackageReference Include="runtime.win-x64.Microsoft.DotNet.ILCompiler.LLVM" />
+    <PackageReference Condition="'$([MSBuild]::IsOSPlatform(&quot;Windows&quot;))' == 'true'" Include="runtime.win-x64.Microsoft.DotNet.ILCompiler.LLVM" />
+    <PackageReference Condition="'$([MSBuild]::IsOSPlatform(&quot;Windows&quot;))' == 'false'" Include="runtime.linux-x64.Microsoft.DotNet.ILCompiler.LLVM" />
   </ItemGroup>
   
   <ItemGroup>
@@ -54,10 +59,14 @@
     <ProjectReference Include="..\sizoscopeX.Core\sizoscopeX.Core.csproj" />
   </ItemGroup>
 
+  <PropertyGroup>
+    <ExecutableExtensionName Condition="'$([MSBuild]::IsOSPlatform(&quot;Windows&quot;))' == 'true'">.exe</ExecutableExtensionName>
+  </PropertyGroup>
+
   <ItemGroup>
     <EmscriptenEnvVars Include="DOTNET_EMSCRIPTEN_LLVM_ROOT=$(EmscriptenUpstreamBinPath)" />
     <EmscriptenEnvVars Include="DOTNET_EMSCRIPTEN_BINARYEN_ROOT=$(EmscriptenUpstreamBinPath)" />
-    <EmscriptenEnvVars Include="DOTNET_EMSCRIPTEN_NODE_JS=$(EmscriptenNodeBinPath)\node.exe" />
+    <EmscriptenEnvVars Include="DOTNET_EMSCRIPTEN_NODE_JS=$(EmscriptenNodeBinPath)node$(ExecutableExtensionName)" />
     <EmscriptenEnvVars Include="EM_CACHE=$(EmscriptenCacheSdkCacheDir)" />
   </ItemGroup>
 
