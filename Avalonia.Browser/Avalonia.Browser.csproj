@@ -33,6 +33,7 @@
   <ItemGroup>
     <None Include="staticwebassets/**/*.*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <Link>%(Filename)%(Extension)</Link>
       <Visible>false</Visible>
     </None>
