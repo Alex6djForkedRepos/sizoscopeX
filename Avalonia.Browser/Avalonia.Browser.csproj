@@ -32,10 +32,11 @@
 
   <ItemGroup>
     <!-- See https://github.com/dotnet/sdk/blob/9d4d2c4ca35b0856af7df63d6a38b3259aa6917c/src/StaticWebAssetsSdk/Targets/Microsoft.NET.Sdk.StaticWebAssets.Pack.targets#L64-L66 -->
-    <Content Include="staticwebassets/**/*.*">
-      <Pack>true</Pack>
-      <PackagePath>staticwebassets/</PackagePath>
-    </Content>
+    <None Include="staticwebassets/**/*.*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Link>%(Filename)%(Extension)</Link>
+      <Visible>false</Visible>
+    </None>
   </ItemGroup>
 
   <Target Name="NpmInstall" Inputs="webapp/package.json" Outputs="webapp/node_modules/.install-stamp">
