@@ -9,6 +9,7 @@
     <SignAssembly>true</SignAssembly>
     <IsAotCompatible>true</IsAotCompatible>
     <IsTrimmable>true</IsTrimmable>
+    <NoWarn>$(NoWarn);AVA3001</NoWarn>
 </PropertyGroup>
 
   <ItemGroup>

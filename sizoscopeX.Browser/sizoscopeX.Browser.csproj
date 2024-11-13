@@ -19,7 +19,6 @@
     <UsingBrowserRuntimeWorkload>false</UsingBrowserRuntimeWorkload>
     <UsingWasiRuntimeWorkload>false</UsingWasiRuntimeWorkload>
     <UsingEmscriptenWorkload>true</UsingEmscriptenWorkload>
-    <NoWarn>$(NoWarn);AVA3001</NoWarn>
   </PropertyGroup>
   
   <ItemGroup>
