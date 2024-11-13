@@ -197,21 +197,28 @@ public partial class MainView : UserControl
 
         if (id.HasValue)
         {
-            if (id.Value < 0)
+            try
             {
-                await PromptErrorAsync("Dependency graph information is only available in .NET 8 or later.");
+                if (id.Value < 0 || !currentData.DgmlSupported)
+                {
+                    await PromptErrorAsync("Dependency graph information is only available in .NET 8 or later.");
+                    return;
+                }
+
+                if (!currentData.DgmlAvailable || currentData.GetNodeForId(id.Value, out _) is not Node node)
+                {
+                    await PromptErrorAsync("Unable to load dependency graph. Was IlcGenerateDgmlFile=true specified?");
+                    return;
+                }
+
+                var view = new RootView(node);
+                Utils.ShowWindow(view);
+            }
+            catch (Exception ex)
+            {
+                await PromptErrorAsync(ex.Message);
                 return;
             }
-
-            var node = currentData.GetNodeForId(id.Value, out _);
-            if (node == null)
-            {
-                await PromptErrorAsync("Unable to load dependency graph. Was IlcGenerateDgmlFile=true specified?");
-                return;
-            }
-
-            var view = new RootView(node);
-            Utils.ShowWindow(view);
         }
     }
 
