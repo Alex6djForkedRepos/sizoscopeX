@@ -312,7 +312,7 @@ public partial class MainView : UserControl
             CloseButtonText = "OK",
             Title = "About",
             Content = $"""
-                       sizoscopeX - {Assembly.GetEntryAssembly()?.GetName().Version}
+                       sizoscopeX - {typeof(MainView).Assembly?.GetName().Version}
 
                        Copyright (c) 2023 Michal Strehovsky
                        Copyright (c) 2023 hez2010
