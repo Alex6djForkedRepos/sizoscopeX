@@ -34,7 +34,7 @@ jobs:
       if: ${{ github.event.inputs.nuget == 'true' }}
       run: dotnet nuget push ./packages/*.nupkg -s https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_API_KEY }}
     - name: Build for Browser
-      run: dotnet publish sizoscopeX.Browser -c Release -r browser-x64 /p:Version=${{ github.event.inputs.version }}
+      run: dotnet publish sizoscopeX.Browser -c Release -r browser-wasm /p:Version=${{ github.event.inputs.version }}
     - name: Fix Permissions
       run: |
         chmod -v -R +rX "./sizoscopeX.Browser/bin/Release/net9.0-browser/browser-wasm/publish/" | while read line; do
