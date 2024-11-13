@@ -26,9 +26,8 @@
   </ItemGroup>
 
   <PropertyGroup>
-    <EmccFlags>$(EmccFlags) -sINITIAL_MEMORY=268435456</EmccFlags>
-    <EmccExtraArgs>$(EmccExtraArgs) -sINITIAL_MEMORY=268435456  -lcompiler_rt-wasm-sjlj</EmccExtraArgs>
-    <EmccFlags>$(EmccFlags) -sUSE_WEBGL2=1 -sMAX_WEBGL_VERSION=2 -lGL -s INITIAL_MEMORY=268435456</EmccFlags>
+    <EmccExtraArgs>$(EmccExtraArgs) -lcompiler_rt-wasm-sjlj</EmccExtraArgs>
+    <EmccFlags>$(EmccFlags) -sUSE_WEBGL2=1 -sMAX_WEBGL_VERSION=2 -lGL -Oz</EmccFlags>
   </PropertyGroup>
 
   <ItemGroup>
@@ -64,7 +63,7 @@
 
   <ItemGroup>
     <EmscriptenEnvVars Include="DOTNET_EMSCRIPTEN_LLVM_ROOT=$(EmscriptenUpstreamBinPath)" />
-    <EmscriptenEnvVars Include="DOTNET_EMSCRIPTEN_BINARYEN_ROOT=$(EmscriptenUpstreamBinPath)" />
+    <EmscriptenEnvVars Include="DOTNET_EMSCRIPTEN_BINARYEN_ROOT=$(EmscriptenSdkToolsPath)" />
     <EmscriptenEnvVars Include="DOTNET_EMSCRIPTEN_NODE_JS=$(EmscriptenNodeBinPath)node$(ExecutableExtensionName)" />
     <EmscriptenEnvVars Include="EM_CACHE=$(EmscriptenCacheSdkCacheDir)" />
   </ItemGroup>

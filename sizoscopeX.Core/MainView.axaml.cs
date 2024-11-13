@@ -314,8 +314,8 @@ public partial class MainView : UserControl
             Content = $"""
                        sizoscopeX - {typeof(MainView).Assembly?.GetName().Version}
 
-                       Copyright (c) 2023 Michal Strehovsky
-                       Copyright (c) 2023 hez2010
+                       Copyright (c) 2024 Michal Strehovsky
+                       Copyright (c) 2024 hez2010
 
                        https://github.com/MichalStrehovsky
                        https://github.com/hez2010
