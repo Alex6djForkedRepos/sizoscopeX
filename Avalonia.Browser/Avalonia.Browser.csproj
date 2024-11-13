@@ -30,15 +30,6 @@
     <PackageReference Include="Microsoft.DotNet.ILCompiler.LLVM" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Include="staticwebassets/**/*.*">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      <Link>%(Filename)%(Extension)</Link>
-      <Visible>false</Visible>
-    </None>
-  </ItemGroup>
-
   <Target Name="NpmInstall" Inputs="webapp/package.json" Outputs="webapp/node_modules/.install-stamp">
     <Exec Command="npm install" WorkingDirectory="webapp" />
     <!-- Write the stamp file, so incremental builds work -->
@@ -46,5 +37,14 @@
   </Target>
   <Target Name="NpmRunBuild" DependsOnTargets="NpmInstall" BeforeTargets="BeforeBuild">
     <Exec Command="npm run build" WorkingDirectory="webapp" />
+  </Target>
+  <Target Name="IncludeStaticWebAssets" DependsOnTargets="NpmRunBuild" BeforeTargets="BeforeBuild">
+    <ItemGroup>
+      <StaticWebAssets Include="staticwebassets/**/*.*" />
+      <ContentWithTargetPath Include="@(StaticWebAssets)" TargetPath="%(Filename)%(Extension)">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+      </ContentWithTargetPath>
+    </ItemGroup>
   </Target>
 </Project>
