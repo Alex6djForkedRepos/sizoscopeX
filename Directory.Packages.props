@@ -1,0 +1,27 @@
+<Project>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageVersion Include="Avalonia" Version="11.2.0" />
+    <PackageVersion Include="Avalonia.Diagnostics" Version="11.2.0" />
+    <PackageVersion Include="Avalonia.Desktop" Version="11.2.0" />
+    <PackageVersion Include="Avalonia.Fonts.Inter" Version="11.2.0" />
+    <PackageVersion Include="Avalonia.Skia" Version="11.2.0" />
+    <PackageVersion Include="FluentAvaloniaUI" Version="2.1.0" />
+    <PackageVersion Include="HarfBuzzSharp" Version="8.3.1-preview.1.2" />
+    <PackageVersion Include="SkiaSharp" Version="3.118.0-preview.1.2" />
+    <PackageVersion Include="SkiaSharp.HarfBuzz" Version="3.118.0-preview.1.2" />
+    <PackageVersion Include="HarfBuzzSharp.NativeAssets.Win32" Version="8.3.1-preview.1.2" />
+    <PackageVersion Include="SkiaSharp.NativeAssets.Win32" Version="3.118.0-preview.1.2" />
+    <PackageVersion Include="HarfBuzzSharp.NativeAssets.Linux" Version="8.3.1-preview.1.2" />
+    <PackageVersion Include="SkiaSharp.NativeAssets.Linux" Version="3.118.0-preview.1.2" />
+    <PackageVersion Include="HarfBuzzSharp.NativeAssets.macOS" Version="8.3.1-preview.1.2" />
+    <PackageVersion Include="SkiaSharp.NativeAssets.macOS" Version="3.118.0-preview.1.2" />
+    <PackageVersion Include="HarfBuzzSharp.NativeAssets.WebAssembly" Version="8.3.1-preview.1.2" />
+    <PackageVersion Include="SkiaSharp.NativeAssets.WebAssembly" Version="3.118.0-preview.1.2" />
+    <PackageVersion Include="Microsoft.DotNet.ILCompiler.LLVM" Version="10.0.0-alpha.1.24559.1" />
+    <PackageVersion Include="runtime.win-x64.Microsoft.DotNet.ILCompiler.LLVM" Version="10.0.0-alpha.1.24559.1" />
+  </ItemGroup>
+</Project>

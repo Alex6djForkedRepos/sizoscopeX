@@ -9,6 +9,15 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sizoscopeX.Desktop", "sizos
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sizoscopeX.Browser", "sizoscopeX.Browser\sizoscopeX.Browser.csproj", "{2DE62C93-02FC-4F70-88D4-84154C157283}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ソリューション項目", "ソリューション項目", "{60EB86DF-F6D3-4C47-9A57-C51A19C460AE}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		Directory.Packages.props = Directory.Packages.props
+		nuget.config = nuget.config
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avalonia.Browser", "Avalonia.Browser\Avalonia.Browser.csproj", "{276F1E02-A38C-4D5D-AFCF-6C905DABFB1F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +36,10 @@ Global
 		{2DE62C93-02FC-4F70-88D4-84154C157283}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2DE62C93-02FC-4F70-88D4-84154C157283}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2DE62C93-02FC-4F70-88D4-84154C157283}.Release|Any CPU.Build.0 = Release|Any CPU
+		{276F1E02-A38C-4D5D-AFCF-6C905DABFB1F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{276F1E02-A38C-4D5D-AFCF-6C905DABFB1F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{276F1E02-A38C-4D5D-AFCF-6C905DABFB1F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{276F1E02-A38C-4D5D-AFCF-6C905DABFB1F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

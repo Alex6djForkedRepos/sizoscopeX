@@ -10,3 +10,6 @@ msbuild.binlog
 
 .fake
 .idea
+
+staticwebassets/
+node_modules/
