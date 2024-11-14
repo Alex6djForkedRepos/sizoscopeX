@@ -5,7 +5,6 @@ using Avalonia.Platform.Storage;
 using FluentAvalonia.UI.Controls;
 using Avalonia.Input;
 using static MstatData;
-using System.Reflection;
 
 namespace sizoscopeX.Core;
 
@@ -13,6 +12,7 @@ public partial class MainView : UserControl
 {
     private readonly MainViewModel viewModel = new();
     private static readonly string[] filterPatterns = new[] { "*.mstat", "*.scan.dgml.xml" };
+    private const string repoUrl = "https://github.com/hez2010/sizoscopeX";
 
     public MainView()
     {
@@ -337,6 +337,17 @@ public partial class MainView : UserControl
                        """
         };
         await dialog.ShowAsync(TopLevel.GetTopLevel(this));
+    }
+
+    public async void Source_Clicked(object? sender, RoutedEventArgs args)
+    {
+        if (TopLevel.GetTopLevel(this) is TopLevel topLevel)
+        {
+            if (!await topLevel.Launcher.LaunchUriAsync(new Uri(repoUrl)))
+            {
+                await PromptErrorAsync($"Failed to open the source repository '{repoUrl}'.");
+            }
+        }
     }
 
     private async Task<(MemoryStream mstatStream, MemoryStream? dmglStream)> ReadStatFilesAsync(IReadOnlyList<IStorageItem> result)

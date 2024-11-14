@@ -23,6 +23,7 @@
 				</MenuItem>
 				<MenuItem Header="Help">
 					<MenuItem Header="Third party notices" Click="ThirdParty_Clicked" />
+          <MenuItem Header="Source repository" Click="Source_Clicked" />
 					<MenuItem Header="About" Click="About_Clicked" />
 				</MenuItem>
 			</Menu>
