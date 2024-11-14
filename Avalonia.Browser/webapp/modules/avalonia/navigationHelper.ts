@@ -11,4 +11,9 @@ export class NavigationHelper {
             }
         };
     }
+
+    public static openUri(url?: string, target?: string): boolean {
+        const w = window.open(url, target);
+        return !!w;
+    }
 }
