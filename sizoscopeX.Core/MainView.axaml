@@ -45,7 +45,7 @@
 					</TreeDataTemplate>
 				</TreeView.ItemTemplate>
 			</TreeView>
-			<Grid Grid.Row="1" IsVisible="{Binding CurrentData, Converter={x:Static ObjectConverters.IsNull},Mode=OneWay}">
+			<Grid Grid.Row="1">
 				<Grid.IsVisible>
 					<MultiBinding Mode="OneWay" Converter="{x:Static BoolConverters.And}">
 						<Binding Path="CurrentData" Converter="{x:Static ObjectConverters.IsNull}" />
