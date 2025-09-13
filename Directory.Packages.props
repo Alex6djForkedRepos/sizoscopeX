@@ -2,7 +2,6 @@
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
-
   <ItemGroup>
     <PackageVersion Include="Avalonia" Version="11.3.6" />
     <PackageVersion Include="Avalonia.Diagnostics" Version="11.3.6" />
@@ -24,5 +23,6 @@
     <PackageVersion Include="Microsoft.DotNet.ILCompiler.LLVM" Version="10.0.0-preview.2.25455.1" />
     <PackageVersion Include="runtime.win-x64.Microsoft.DotNet.ILCompiler.LLVM" Version="10.0.0-preview.2.25455.1" />
     <PackageVersion Include="runtime.linux-x64.Microsoft.DotNet.ILCompiler.LLVM" Version="10.0.0-preview.2.25455.1" />
+    <PackageVersion Include="TurboXml" Version="2.0.2" />
   </ItemGroup>
 </Project>

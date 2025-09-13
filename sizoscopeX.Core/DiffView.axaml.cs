@@ -10,18 +10,21 @@ namespace sizoscopeX.Core
     public partial class DiffView : UserControl
     {
         private readonly DiffViewModel _viewModel;
+        private readonly MstatData _compare;
 
         [Obsolete("Should not be called except by XAML designer.")]
         public DiffView()
         {
             InitializeComponent();
+            _compare = default!;
             _viewModel = default!;
         }
 
         public DiffView(MstatData baseline, MstatData compare)
         {
             InitializeComponent();
-            _viewModel = new(baseline, compare);
+            _compare = compare;
+            _viewModel = new(baseline, _compare);
             DataContext = _viewModel;
             _viewModel.TitleChangedEvent += (obj, e) =>
             {
@@ -36,6 +39,12 @@ namespace sizoscopeX.Core
         {
             Utils.SetTitle(_viewModel.TitleString);
             base.OnLoaded(e);
+        }
+
+        protected override void OnUnloaded(RoutedEventArgs e)
+        {
+            _compare?.Dispose();
+            base.OnUnloaded(e);
         }
 
         private async void Tree_DoubleTapped(object? sender, TappedEventArgs args)
@@ -63,14 +72,25 @@ namespace sizoscopeX.Core
                     {
                         CloseButtonText = "OK",
                         Title = "Error",
+                        Content = "This node was not used directly and is included for display purposes only. Try analyzing sub nodes."
+                    };
+                    await dialog.ShowAsync(TopLevel.GetTopLevel(this));
+                    return;
+                }
+
+                if (!currentData.DgmlSupported)
+                {
+                    var dialog = new ContentDialog
+                    {
+                        CloseButtonText = "OK",
+                        Title = "Error",
                         Content = "Dependency graph information is only available in .NET 8 or later."
                     };
                     await dialog.ShowAsync(TopLevel.GetTopLevel(this));
                     return;
                 }
 
-                var node = currentData.GetNodeForId(id.Value, out _);
-                if (node == null)
+                if (!currentData.DgmlAvailable || currentData.GetNodeForId(id.Value, out _) is not Node node)
                 {
                     var dialog = new ContentDialog
                     {

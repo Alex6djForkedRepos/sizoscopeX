@@ -75,9 +75,9 @@ partial class MstatData
         internal void AddSize(MstatData data, TypeReferenceHandle handle, int size)
         {
             Debug.Assert(Unsafe.AreSame(ref this, ref Unsafe.Add(ref data._typeRefCache[0], MetadataTokens.GetRowNumber(handle))));
-            
+
             AggregateSize += size;
-            
+
             TypeReference typeRef = data._reader.GetTypeReference(handle);
             if (typeRef.ResolutionScope.Kind != HandleKind.TypeReference)
                 data.GetRowCache((AssemblyReferenceHandle)typeRef.ResolutionScope).AddSize(size);
@@ -109,7 +109,7 @@ partial class MstatData
             ref TypeRefRowCache typeRefRow = ref data.GetRowCache(declaringTypeRef);
             NextTypeSpec = typeRefRow.FirstTypeSpec;
             typeRefRow.FirstTypeSpec = handle;
-            
+
             // TODO: compute hashcode as part of GetDeclaringTypeReference and make it better
             HashCode = typeRefRow.HashCode;
 
@@ -221,7 +221,7 @@ partial class MstatData
             ref MemberRefRowCache parentCache = ref data.GetRowCache((MemberReferenceHandle)methodSpec.Method);
             NextMethodSpec = parentCache.FirstMethodSpec;
             parentCache.FirstMethodSpec = handle;
-            
+
             // TODO: better hashcode
             HashCode = parentCache.HashCode;
 

@@ -15,6 +15,7 @@ public partial class MstatData : IDisposable
     private IntPtr _peImage;
 
     private readonly TypeReferenceHandle[] _primitiveTypeCodeToTypeRef;
+
     private readonly List<(string Name, int Size)> _blobs;
 
     private int _typeSize;
@@ -36,6 +37,7 @@ public partial class MstatData : IDisposable
     public int UnownedFrozenObjectSize => _unownedFrozenObjectSize;
 
     public int BlobsSize => _blobs.Sum(x => x.Size);
+
     public IEnumerable<(string Name, int Size)> Blobs => _blobs;
 
     ~MstatData() => Dispose(false);
@@ -316,7 +318,7 @@ public partial class MstatData : IDisposable
                 Size = reader.ILReadI4Constant(),
                 NodeId = reader.ILReadI4Constant(),
             };
-            
+
             if (reader.ILTryReadLdToken(out EntityHandle owningType))
             {
                 entry.OwningEntity = owningType;
@@ -361,7 +363,7 @@ public partial class MstatData : IDisposable
         {
             default
         };
-        
+
         while (reader.RemainingBytes > 0)
         {
             var asmRefHandle = (AssemblyReferenceHandle)MetadataTokens.Handle(reader.ILReadI4Constant());
@@ -703,4 +705,3 @@ public enum FormatOptions
 {
     NamespaceQualify = 1,
 }
-

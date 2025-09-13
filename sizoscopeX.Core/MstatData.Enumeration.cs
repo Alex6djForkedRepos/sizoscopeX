@@ -68,10 +68,7 @@ partial class MstatData
         public FrozenObjectHandle MoveNext(MstatData data, FrozenObjectHandle current) => data.GetRowCache(current).NextFrozenObject;
     }
 
-    public struct Enumerator<THandle, TRecord, TNext> : IEnumerable<TRecord>, IEnumerator<TRecord>
-        where TNext : struct, ICanMoveNext<THandle, TRecord>
-        where THandle : struct
-        where TRecord : struct
+    public struct Enumerator<THandle, TRecord, TNext> : IEnumerable<TRecord>, IEnumerator<TRecord> where TNext : struct, ICanMoveNext<THandle, TRecord>
     {
         private readonly MstatData _data;
         private readonly THandle _first;

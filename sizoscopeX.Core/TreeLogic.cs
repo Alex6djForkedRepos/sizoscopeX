@@ -1,7 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Reflection.Metadata;
 using static MstatData;
-using static sizoscopeX.Core.TreeLogic;
 
 namespace sizoscopeX.Core
 {
@@ -59,7 +58,6 @@ namespace sizoscopeX.Core
                     node.Nodes.Add(new TreeNode($"{frozenObj}: {mstat.GetNameForId(frozenObj.NodeId)} ({AsFileSize(frozenObj.Size)})", NodeType.FrozenData, node.Sorter)
                     {
                         Tag = frozenObj,
-                        MstatData = mstat,
                     });
                 }
             }
@@ -67,10 +65,7 @@ namespace sizoscopeX.Core
             {
                 foreach (var blob in node.Sorter.Sort(blobData.Blobs))
                 {
-                    node.Nodes.Add(new TreeNode($"{blob.Name} ({AsFileSize(blob.AggregateSize)})", NodeType.Blob, node.Sorter)
-                    {
-                        MstatData = blobData,
-                    });
+                    node.Nodes.Add(new TreeNode($"{blob.Name} ({AsFileSize(blob.AggregateSize)})", NodeType.Blob, node.Sorter));
                 }
             }
             else if (node is { Tag: MstatAssembly resourceAssembly, Type: NodeType.Resource })
@@ -126,7 +121,6 @@ namespace sizoscopeX.Core
                     node.Nodes.Add(new TreeNode($"{frozenObj}: {node.MstatData!.GetNameForId(frozenObj.NodeId)} ({AsFileSize(frozenObj.Size)})", NodeType.FrozenData, node.Sorter)
                     {
                         Tag = frozenObj,
-                        MstatData = node.MstatData,
                     });
                 }
             }
@@ -137,7 +131,6 @@ namespace sizoscopeX.Core
                     node.Nodes.Add(new TreeNode($"{frozenObj}: {node.MstatData!.GetNameForId(frozenObj.NodeId)} ({AsFileSize(frozenObj.Size)})", NodeType.FrozenData, node.Sorter)
                     {
                         Tag = frozenObj,
-                        MstatData = node.MstatData,
                     });
                 }
             }

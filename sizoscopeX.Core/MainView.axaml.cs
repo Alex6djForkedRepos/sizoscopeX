@@ -165,7 +165,7 @@ public partial class MainView : UserControl
     private async Task LoadForDiffAsync(MstatData currentData, IReadOnlyList<IStorageFile> files)
     {
         var (mstatStream, dmglStream) = await ReadStatFilesAsync(files);
-        var mstaDataToCompare = Read(mstatStream, dmglStream);
+        var mstaDataToCompare = await Utils.TaskRunIfPossible(() => Read(mstatStream, dmglStream));
         var view = new DiffView(currentData, mstaDataToCompare);
         Utils.ShowWindow(view);
     }
@@ -204,7 +204,13 @@ public partial class MainView : UserControl
         {
             try
             {
-                if (id.Value < 0 || !currentData.DgmlSupported)
+                if (id.Value < 0)
+                {
+                    await PromptErrorAsync("This node was not used directly and is included for display purposes only. Try analyzing sub nodes.");
+                    return;
+                }
+
+                if (!currentData.DgmlSupported)
                 {
                     await PromptErrorAsync("Dependency graph information is only available in .NET 8 or later.");
                     return;
@@ -257,6 +263,32 @@ public partial class MainView : UserControl
                        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
                        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
                        THE SOFTWARE.
+                       
+                       License notice for TurboXml
+
+                                                  Copyright (c) 2024, Alexandre Mutel
+                       All rights reserved.
+
+                       Redistribution and use in source and binary forms, with or without modification
+                       , are permitted provided that the following conditions are met:
+
+                       1. Redistributions of source code must retain the above copyright notice, this 
+                          list of conditions and the following disclaimer.
+
+                       2. Redistributions in binary form must reproduce the above copyright notice, 
+                          this list of conditions and the following disclaimer in the documentation 
+                          and/or other materials provided with the distribution.
+
+                       THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
+                       ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
+                       WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE 
+                       DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+                       FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL 
+                       DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR 
+                       SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
+                       CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+                       OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
+                       OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
                        License notice for Avalonia
 
@@ -357,10 +389,6 @@ public partial class MainView : UserControl
 
     private async Task<(MemoryStream mstatStream, MemoryStream? dmglStream)> ReadStatFilesAsync(IReadOnlyList<IStorageItem> result)
     {
-        var mstat = result.FirstOrDefault(i => i is IStorageFile
-        {
-            Name: [.., '.', 'm' or 'M', 's' or 'S', 't' or 'T', 'a' or 'A', 't' or 'T']
-        }) as IStorageFile;
         var dmgl = result.FirstOrDefault(i => i is IStorageFile
         {
             Name:
@@ -369,7 +397,10 @@ public partial class MainView : UserControl
                 'l' or 'L', '.', 'x' or 'X', 'm' or 'M', 'l' or 'L'
             ]
         }) as IStorageFile;
-        if (mstat is null)
+        if (result.FirstOrDefault(i => i is IStorageFile
+        {
+            Name: [.., '.', 'm' or 'M', 's' or 'S', 't' or 'T', 'a' or 'A', 't' or 'T']
+        }) is not IStorageFile mstat)
         {
             throw new InvalidOperationException("An invalid file has been dropped.");
         }
