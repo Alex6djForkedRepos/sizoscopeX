@@ -21,9 +21,9 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v5.0.0
     - name: Setup .NET
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@v5.0.0
       with:
         dotnet-version: 10.0.x
         dotnet-quality: preview
@@ -42,7 +42,7 @@ jobs:
           echo "::warning title=Invalid file permissions automatically fixed::$line"
         done
     - name: Upload Browser app
-      uses: actions/upload-pages-artifact@v2
+      uses: actions/upload-pages-artifact@v4.0.0
       with:
         path: './sizoscopeX.Browser/bin/Release/net9.0-browser/browser-wasm/publish'
 
@@ -61,5 +61,5 @@ jobs:
     - name: Deploy to GitHub Pages
       id: deployment
       if: ${{ github.event.inputs.gh_pages == 'true' }}
-      uses: actions/deploy-pages@v2
+      uses: actions/deploy-pages@v4.0.5
   
