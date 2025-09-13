@@ -28,7 +28,9 @@ jobs:
         dotnet-version: 10.0.x
         dotnet-quality: preview
     - name: Install Workload
-      run: dotnet workload install wasm-tools
+      run: |
+        dotnet workload install wasm-tools
+        dotnet workload install wasm-tools-net8
     - name: Build for Desktop
       run: dotnet pack sizoscopeX.Desktop -c Release -o packages /p:Version=${{ github.event.inputs.version }}
     - name: Push to Nuget
