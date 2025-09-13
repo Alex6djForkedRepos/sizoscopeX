@@ -5,12 +5,14 @@ namespace sizoscopeX.Core.ViewModels;
 public sealed class SearchResultItem : INotifyPropertyChanged
 {
     private string? _name;
+    private string? _entryName;
     private int _exclusiveSize;
     private int _inclusiveSize;
 
-    public SearchResultItem(string? name, int exclusiveSize, int inclusiveSize)
+    public SearchResultItem(string? name, string? entryName, int exclusiveSize, int inclusiveSize)
     {
         Name = name;
+        EntryName = entryName;
         ExclusiveSize = exclusiveSize;
         InclusiveSize = inclusiveSize;
     }
@@ -22,6 +24,16 @@ public sealed class SearchResultItem : INotifyPropertyChanged
         {
             _name = value;
             PropertyChanged?.Invoke(this, new(nameof(Name)));
+        }
+    }
+
+    public string? EntryName
+    {
+        get => _entryName;
+        set
+        {
+            _entryName = value;
+            PropertyChanged?.Invoke(this, new(nameof(EntryName)));
         }
     }
 

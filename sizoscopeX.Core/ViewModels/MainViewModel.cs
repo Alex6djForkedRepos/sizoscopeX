@@ -20,7 +20,7 @@ public class MainViewModel : INotifyPropertyChanged
     private MstatData? _data;
     private int _sortMode;
     private int _searchMode;
-    private string? _searchPattern;
+    private string _searchPattern = "";
     private readonly DispatcherTimer _searchDebouncer;
     private bool _loading;
 
@@ -85,7 +85,7 @@ public class MainViewModel : INotifyPropertyChanged
         }
     }
 
-    public string? SearchPattern
+    public string SearchPattern
     {
         get => _searchPattern;
         set
@@ -133,22 +133,24 @@ public class MainViewModel : INotifyPropertyChanged
 
     private void RefreshSearch()
     {
-        if (_searchPattern is null || _data is null)
+        if (_data is null)
         {
             return;
         }
 
         SearchResult.Clear();
-
-        if (_searchPattern.Length > 0)
+        var result = new List<SearchResultItem>();
+        foreach (var asm in _data.GetScopes())
         {
-            foreach (var asm in _data.GetScopes())
-            {
-                if (asm.Name == "System.Private.CompilerGenerated")
-                    continue;
+            if (asm.Name == "System.Private.CompilerGenerated")
+                continue;
 
-                AddTypes(asm.GetTypes());
-            }
+            AddTypes(asm.GetTypes());
+        }
+
+        foreach (var item in result.OrderBy(x => x.Name))
+        {
+            SearchResult.Add(item);
         }
 
         void AddTypes(Enumerator<TypeReferenceHandle, MstatTypeDefinition, MoveToNextInScope> types)
@@ -157,17 +159,21 @@ public class MainViewModel : INotifyPropertyChanged
             {
                 if (t.Name.Contains(_searchPattern) || t.Namespace.Contains(_searchPattern))
                 {
-                    var newItem = new SearchResultItem(t.ToString(), t.Size, t.AggregateSize);
+                    var newItem = new SearchResultItem(t.ToString(), _data.DgmlSupported && _data.DgmlAvailable && t.NodeId >= 0 ? _data.GetNameForId(t.NodeId) : null, t.Size, t.AggregateSize);
 
                     newItem.Tag = t;
 
-                    SearchResult.Add(newItem);
+                    result.Add(newItem);
                 }
 
                 AddTypes(t.GetNestedTypes());
 
                 if (_searchMode is 0 or 2)
+                {
+                    foreach (var s in t.GetTypeSpecifications())
+                        AddMembers(s.GetMembers());
                     AddMembers(t.GetMembers());
+                }
             }
         }
 
@@ -177,56 +183,13 @@ public class MainViewModel : INotifyPropertyChanged
             {
                 if (m.Name.Contains(_searchPattern))
                 {
-                    var newItem = new SearchResultItem(m.ToString(), m.Size, m.AggregateSize);
+                    var newItem = new SearchResultItem(m.ToString(), _data.DgmlSupported && _data.DgmlAvailable && m.NodeId >= 0 ? _data.GetNameForId(m.NodeId) : null, m.Size, m.AggregateSize);
 
                     newItem.Tag = m;
 
-                    SearchResult.Add(newItem);
+                    result.Add(newItem);
                 }
             }
-        }
-    }
-
-    class SearchResultComparer : IComparer
-    {
-        public bool InvertSort { get; set; }
-
-        public int SortColumn { get; set; }
-
-        public int Compare(object? x, object? y)
-        {
-            var i1 = (SearchResultItem)x!;
-            var i2 = (SearchResultItem)y!;
-
-            int result;
-            if (SortColumn == 0)
-            {
-                string? s1 = i1.Tag?.ToString();
-                string? s2 = i2.Tag?.ToString();
-                result = string.Compare(s1, s2);
-            }
-            else
-            {
-                int v1 = i1.Tag switch
-                {
-                    MstatTypeDefinition def => SortColumn == 1 ? def.Size : def.AggregateSize,
-                    MstatTypeSpecification spec => SortColumn == 1 ? spec.Size : spec.AggregateSize,
-                    MstatMemberDefinition mem => SortColumn == 1 ? mem.Size : mem.AggregateSize,
-                    MstatMethodSpecification met => met.Size,
-                    _ => throw new InvalidOperationException()
-                };
-                int v2 = i2.Tag switch
-                {
-                    MstatTypeDefinition def => SortColumn == 1 ? def.Size : def.AggregateSize,
-                    MstatTypeSpecification spec => SortColumn == 1 ? spec.Size : spec.AggregateSize,
-                    MstatMemberDefinition mem => SortColumn == 1 ? mem.Size : mem.AggregateSize,
-                    MstatMethodSpecification met => met.Size,
-                    _ => throw new InvalidOperationException()
-                };
-                result = v1.CompareTo(v2);
-            }
-
-            return InvertSort ? -result : result;
         }
     }
 }

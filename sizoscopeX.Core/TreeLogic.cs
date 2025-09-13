@@ -15,7 +15,17 @@ namespace sizoscopeX.Core
             {
                 items.Add(new TreeNode($"Frozen objects ({AsFileSize(data.UnownedFrozenObjectSize)})", NodeType.FrozenData, sorter)
                 {
-                    Tag = data
+                    Tag = data,
+                    MstatData = data
+                });
+            }
+
+            if (data.BlobsSize > 0)
+            {
+                items.Add(new TreeNode($"Blobs ({AsFileSize(data.BlobsSize)})", NodeType.Blob, sorter)
+                {
+                    Tag = data,
+                    MstatData = data
                 });
             }
 
@@ -33,7 +43,8 @@ namespace sizoscopeX.Core
                 string name = $"{asm.Name} ({AsFileSize(asm.AggregateSize)})";
                 TreeNode node = new TreeNode(name, 0, sorter)
                 {
-                    Tag = asm
+                    Tag = asm,
+                    MstatData = data
                 };
                 items.Add(node);
             }
@@ -45,9 +56,20 @@ namespace sizoscopeX.Core
             {
                 foreach (var frozenObj in node.Sorter.Sort(mstat.GetFrozenObjects()))
                 {
-                    node.Nodes.Add(new TreeNode($"Instance of {frozenObj} ({AsFileSize(frozenObj.Size)})", NodeType.FrozenData, node.Sorter)
+                    node.Nodes.Add(new TreeNode($"{frozenObj}: {mstat.GetNameForId(frozenObj.NodeId)} ({AsFileSize(frozenObj.Size)})", NodeType.FrozenData, node.Sorter)
                     {
-                        Tag = frozenObj.NodeId,
+                        Tag = frozenObj,
+                        MstatData = mstat,
+                    });
+                }
+            }
+            else if (node is { Tag: MstatData blobData, Type: NodeType.Blob })
+            {
+                foreach (var blob in node.Sorter.Sort(blobData.Blobs))
+                {
+                    node.Nodes.Add(new TreeNode($"{blob.Name} ({AsFileSize(blob.AggregateSize)})", NodeType.Blob, node.Sorter)
+                    {
+                        MstatData = blobData,
                     });
                 }
             }
@@ -56,7 +78,10 @@ namespace sizoscopeX.Core
                 foreach (var res in node.Sorter.Sort(resourceAssembly.GetManifestResources().Select(r => (r.Name, r.Size))))
                 {
                     string name = $"{res.Name} ({AsFileSize(res.AggregateSize)})";
-                    var newNode = new TreeNode(name, NodeType.Resource, node.Sorter);
+                    var newNode = new TreeNode(name, NodeType.Resource, node.Sorter)
+                    {
+                        MstatData = node.MstatData,
+                    };
                     node.Nodes.Add(newNode);
                 }
             }
@@ -65,8 +90,11 @@ namespace sizoscopeX.Core
                 if (asm.GetManifestResources().MoveNext())
                 {
                     string name = "Resources";
-                    var newNode = new TreeNode(name, NodeType.Resource, node.Sorter);
-                    newNode.Tag = asm;
+                    var newNode = new TreeNode(name, NodeType.Resource, node.Sorter)
+                    {
+                        Tag = asm,
+                        MstatData = node.MstatData,
+                    };
                     node.Nodes.Add(newNode);
                 }
 
@@ -77,8 +105,11 @@ namespace sizoscopeX.Core
                 foreach (var ns in node.Sorter.Sort(namespacesAndSizes))
                 {
                     string name = $"{ns.Name} ({AsFileSize(ns.AggregateSize)})";
-                    var newNode = new TreeNode(name, NodeType.Namespace, node.Sorter);
-                    newNode.Tag = (asm, ns.Name);
+                    var newNode = new TreeNode(name, NodeType.Namespace, node.Sorter)
+                    {
+                        Tag = (asm, ns.Name),
+                        MstatData = node.MstatData,
+                    };
                     node.Nodes.Add(newNode);
                 }
 
@@ -92,9 +123,10 @@ namespace sizoscopeX.Core
             {
                 foreach (var frozenObj in node.Sorter.Sort(frozenDef.GetFrozenObjects()))
                 {
-                    node.Nodes.Add(new TreeNode($"Instance of {frozenObj} ({AsFileSize(frozenObj.Size)})", NodeType.FrozenData, node.Sorter)
+                    node.Nodes.Add(new TreeNode($"{frozenObj}: {node.MstatData!.GetNameForId(frozenObj.NodeId)} ({AsFileSize(frozenObj.Size)})", NodeType.FrozenData, node.Sorter)
                     {
-                        Tag = frozenObj.NodeId,
+                        Tag = frozenObj,
+                        MstatData = node.MstatData,
                     });
                 }
             }
@@ -102,9 +134,10 @@ namespace sizoscopeX.Core
             {
                 foreach (var frozenObj in node.Sorter.Sort(frozenSpec.GetFrozenObjects()))
                 {
-                    node.Nodes.Add(new TreeNode($"Instance of {frozenObj} ({AsFileSize(frozenObj.Size)})", NodeType.FrozenData, node.Sorter)
+                    node.Nodes.Add(new TreeNode($"{frozenObj}: {node.MstatData!.GetNameForId(frozenObj.NodeId)} ({AsFileSize(frozenObj.Size)})", NodeType.FrozenData, node.Sorter)
                     {
-                        Tag = frozenObj.NodeId,
+                        Tag = frozenObj,
+                        MstatData = node.MstatData,
                     });
                 }
             }
@@ -113,9 +146,11 @@ namespace sizoscopeX.Core
                 foreach (var inst in node.Sorter.Sort(genericDef.GetTypeSpecifications()))
                 {
                     string name = $"{inst} ({AsFileSize(inst.AggregateSize)})";
-                    var newNode = new TreeNode(name, NodeType.Class, node.Sorter);
-                    newNode.Tag = inst;
-
+                    var newNode = new TreeNode(name, NodeType.Class, node.Sorter)
+                    {
+                        Tag = inst,
+                        MstatData = node.MstatData,
+                    };
                     node.Nodes.Add(newNode);
                 }
             }
@@ -123,8 +158,11 @@ namespace sizoscopeX.Core
             {
                 if (spec.GetFrozenObjects().MoveNext())
                 {
-                    TreeNode newNode = new TreeNode("Frozen objects", NodeType.FrozenData, node.Sorter);
-                    newNode.Tag = spec;
+                    TreeNode newNode = new TreeNode("Frozen objects", NodeType.FrozenData, node.Sorter)
+                    {
+                        Tag = spec,
+                        MstatData = node.MstatData,
+                    };
                     node.Nodes.Add(newNode);
                 }
                 AppendMembers(node, spec.GetMembers());
@@ -133,14 +171,20 @@ namespace sizoscopeX.Core
             {
                 if (def.GetFrozenObjects().MoveNext())
                 {
-                    TreeNode newNode = new TreeNode("Frozen objects", NodeType.FrozenData, node.Sorter);
-                    newNode.Tag = def;
+                    TreeNode newNode = new TreeNode("Frozen objects", NodeType.FrozenData, node.Sorter)
+                    {
+                        Tag = def,
+                        MstatData = node.MstatData,
+                    };
                     node.Nodes.Add(newNode);
                 }
                 if (def.GetTypeSpecifications().MoveNext())
                 {
-                    TreeNode newNode = new TreeNode("Instantiations", NodeType.Instantiation, node.Sorter);
-                    newNode.Tag = def;
+                    TreeNode newNode = new TreeNode("Instantiations", NodeType.Instantiation, node.Sorter)
+                    {
+                        Tag = def,
+                        MstatData = node.MstatData,
+                    };
                     node.Nodes.Add(newNode);
                 }
                 AppendTypes(node, def.GetNestedTypes(), x => true);
@@ -151,8 +195,11 @@ namespace sizoscopeX.Core
                 foreach (var inst in memberDef.GetInstantiations())
                 {
                     string name = $"{inst} ({AsFileSize(inst.Size)})";
-                    var newNode = new TreeNode(name, NodeType.Method, node.Sorter);
-                    newNode.Tag = inst;
+                    var newNode = new TreeNode(name, NodeType.Method, node.Sorter)
+                    {
+                        Tag = inst,
+                        MstatData = node.MstatData,
+                    };
                     node.Nodes.Add(newNode);
                 }
             }
@@ -162,8 +209,11 @@ namespace sizoscopeX.Core
                 foreach (var t in node.Sorter.Sort(list.Where(filter)))
                 {
                     string name = $"{t.Name} ({AsFileSize(t.AggregateSize)})";
-                    var n = new TreeNode(name, NodeType.Class, node.Sorter);
-                    n.Tag = t;
+                    var n = new TreeNode(name, NodeType.Class, node.Sorter)
+                    {
+                        Tag = t,
+                        MstatData = node.MstatData,
+                    };
                     node.Nodes.Add(n);
                 }
             }
@@ -173,8 +223,11 @@ namespace sizoscopeX.Core
                 foreach (var t in node.Sorter.Sort(list))
                 {
                     string name = $"{t} ({AsFileSize(t.AggregateSize)})";
-                    var n = new TreeNode(name, t.IsField ? NodeType.Field : NodeType.Method, node.Sorter);
-                    n.Tag = t;
+                    var n = new TreeNode(name, t.IsField ? NodeType.Field : NodeType.Method, node.Sorter)
+                    {
+                        Tag = t,
+                        MstatData = node.MstatData,
+                    };
                     node.Nodes.Add(n);
                 }
             }

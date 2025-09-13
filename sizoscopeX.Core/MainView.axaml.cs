@@ -180,18 +180,23 @@ public partial class MainView : UserControl
         Environment.Exit(0);
     }
 
-    private async void Tree_DoubleTapped(object? sender, TappedEventArgs args)
+    private async void Item_DoubleTapped(object? sender, TappedEventArgs args)
     {
-        if (sender is not TreeView treeView || treeView.SelectedItem is not TreeNode tn) return;
+        object? tag = null;
+        if (sender is TreeView treeView && treeView.SelectedItem is TreeNode tn) tag = tn.Tag;
+        if (sender is ListBox listBox && listBox.SelectedItem is SearchResultItem sri) tag = sri.Tag;
+
         var currentData = viewModel.CurrentData;
         if (currentData is null) return;
 
-        int? id = tn.Tag switch
+        int? id = tag switch
         {
             MstatTypeDefinition typedef => typedef.NodeId,
             MstatTypeSpecification typespec => typespec.NodeId,
             MstatMemberDefinition memberdef => memberdef.NodeId,
             MstatMethodSpecification methodspec => methodspec.NodeId,
+            MstatFrozenObject frozenObject => frozenObject.NodeId,
+            int nodeId => nodeId,
             _ => null
         };
 

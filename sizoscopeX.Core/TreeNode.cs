@@ -49,6 +49,8 @@ namespace sizoscopeX.Core
 
         public object? Tag { get; set; }
 
+        public MstatData? MstatData { get; set; }
+
         public TreeNode? FirstNode => Nodes.FirstOrDefault();
 
         public ObservableCollection<TreeNode> Nodes { get; } = new();

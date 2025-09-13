@@ -14,6 +14,7 @@ public class TreeItemControl : TemplatedControl
     private const string pcClass = ":class";
     private const string pcMethod = ":method";
     private const string pcInstantiation = ":instantiation";
+    private const string pcBlob = ":blob";
     private const string pcFrozenData = ":frozenData";
     private const string pcResource = ":resource";
     private const string pcField = ":field";
@@ -47,6 +48,7 @@ public class TreeItemControl : TemplatedControl
         PseudoClasses.Set(pcClass, type is NodeType.Class);
         PseudoClasses.Set(pcMethod, type is NodeType.Method);
         PseudoClasses.Set(pcInstantiation, type is NodeType.Instantiation);
+        PseudoClasses.Set(pcBlob, type is NodeType.Blob);
         PseudoClasses.Set(pcFrozenData, type is NodeType.FrozenData);
         PseudoClasses.Set(pcResource, type is NodeType.Resource);
         PseudoClasses.Set(pcField, type is NodeType.Field);

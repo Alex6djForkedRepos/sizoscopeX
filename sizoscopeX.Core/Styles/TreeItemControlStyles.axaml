@@ -35,13 +35,16 @@
 	<Style Selector="controls|TreeItemControl:instantiation">
 		<Setter Property="Image" Value="/Assets/Instantiation.png" />
 	</Style>
-    <Style Selector="controls|TreeItemControl:frozenData">
-        <Setter Property="Image" Value="/Assets/FrozenData.png" />
-    </Style>
-    <Style Selector="controls|TreeItemControl:resource">
-        <Setter Property="Image" Value="/Assets/Resource.png" />
-    </Style>
-    <Style Selector="controls|TreeItemControl:field">
-        <Setter Property="Image" Value="/Assets/Field.png" />
-    </Style>
+	<Style Selector="controls|TreeItemControl:frozenData">
+		<Setter Property="Image" Value="/Assets/FrozenData.png" />
+	</Style>
+	<Style Selector="controls|TreeItemControl:blob">
+		<Setter Property="Image" Value="/Assets/Blob.png" />
+	</Style>
+	<Style Selector="controls|TreeItemControl:resource">
+		<Setter Property="Image" Value="/Assets/Resource.png" />
+	</Style>
+	<Style Selector="controls|TreeItemControl:field">
+		<Setter Property="Image" Value="/Assets/Field.png" />
+	</Style>
 </Styles>

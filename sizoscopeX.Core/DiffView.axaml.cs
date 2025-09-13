@@ -50,6 +50,8 @@ namespace sizoscopeX.Core
                 MstatTypeSpecification typespec => typespec.NodeId,
                 MstatMemberDefinition memberdef => memberdef.NodeId,
                 MstatMethodSpecification methodspec => methodspec.NodeId,
+                MstatFrozenObject frozenObject => frozenObject.NodeId,
+                int nodeId => nodeId,
                 _ => null
             };
 
