@@ -13,8 +13,7 @@ internal class BrowserLauncher : ILauncher
 
         if (uri.IsAbsoluteUri)
         {
-            var result = NavigationHelper.WindowOpen(uri.AbsoluteUri, "_blank");
-            return Task.FromResult(result);
+            return Task.FromResult(NavigationHelper.WindowOpen(uri.AbsoluteUri, "_blank"));
         }
         return Task.FromResult(false);
     }
