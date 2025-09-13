@@ -28,16 +28,14 @@ jobs:
         dotnet-version: 10.0.x
         dotnet-quality: preview
     - name: Install Workload
-      run: |
-          dotnet workload install wasm-tools
-          dotnet workload install wasm-tools-net8
+      run: dotnet workload install wasm-tools
     - name: Build for Desktop
       run: dotnet pack sizoscopeX.Desktop -c Release -o packages /p:Version=${{ github.event.inputs.version }}
     - name: Push to Nuget
       if: ${{ github.event.inputs.nuget == 'true' }}
       run: dotnet nuget push ./packages/*.nupkg -s https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_API_KEY }}
     - name: Build for Browser
-      run: dotnet publish sizoscopeX.Browser -c Release -r browser-wasm -f net10.0 /p:Version=${{ github.event.inputs.version }}
+      run: dotnet publish sizoscopeX.Browser -c Release -r browser-wasm /p:Version=${{ github.event.inputs.version }}
     - name: Fix Permissions
       run: |
         chmod -v -R +rX "./sizoscopeX.Browser/bin/Release/net10.0-browser/browser-wasm/publish/" | while read line; do
