@@ -38,13 +38,13 @@ jobs:
       run: dotnet publish sizoscopeX.Browser -c Release -r browser-wasm /p:Version=${{ github.event.inputs.version }}
     - name: Fix Permissions
       run: |
-        chmod -v -R +rX "./sizoscopeX.Browser/bin/Release/net9.0-browser/browser-wasm/publish/" | while read line; do
+        chmod -v -R +rX "./sizoscopeX.Browser/bin/Release/net10.0-browser/browser-wasm/publish/" | while read line; do
           echo "::warning title=Invalid file permissions automatically fixed::$line"
         done
     - name: Upload Browser app
       uses: actions/upload-pages-artifact@v4.0.0
       with:
-        path: './sizoscopeX.Browser/bin/Release/net9.0-browser/browser-wasm/publish'
+        path: './sizoscopeX.Browser/bin/Release/net10.0-browser/browser-wasm/publish'
 
   deploy:
     needs: build
