@@ -245,9 +245,8 @@ public partial class MainView : UserControl
             var parentMap = new Dictionary<object, object>();
             var path = new Stack<object>();
 
-            while (queue.Count > 0)
+            while (queue.TryDequeue(out var node))
             {
-                var node = queue.Dequeue();
                 if (node.Equals(nodeToExpand))
                 {
                     path.Push(node);
