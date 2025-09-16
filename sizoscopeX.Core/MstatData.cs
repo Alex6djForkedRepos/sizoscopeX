@@ -48,6 +48,11 @@ public partial class MstatData : IDisposable
         _peImage = (IntPtr)peImage;
     }
 
+    public void InvalidateOwnership()
+    {
+        _peImage = IntPtr.Zero;
+    }
+
     private MstatData(PEReader peReader)
     {
         _peReader = peReader;

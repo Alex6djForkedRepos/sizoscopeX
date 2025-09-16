@@ -10,21 +10,18 @@ namespace sizoscopeX.Core
     public partial class DiffView : UserControl
     {
         private readonly DiffViewModel _viewModel;
-        private readonly MstatData _compare;
 
         [Obsolete("Should not be called except by XAML designer.")]
         public DiffView()
         {
             InitializeComponent();
-            _compare = default!;
             _viewModel = default!;
         }
 
         public DiffView(MstatData baseline, MstatData compare)
         {
             InitializeComponent();
-            _compare = compare;
-            _viewModel = new(baseline, _compare);
+            _viewModel = new(baseline, compare);
             DataContext = _viewModel;
             _viewModel.TitleChangedEvent += (obj, e) =>
             {
@@ -39,12 +36,6 @@ namespace sizoscopeX.Core
         {
             Utils.SetTitle(_viewModel.TitleString);
             base.OnLoaded(e);
-        }
-
-        protected override void OnUnloaded(RoutedEventArgs e)
-        {
-            _compare?.Dispose();
-            base.OnUnloaded(e);
         }
 
         private async void Tree_DoubleTapped(object? sender, TappedEventArgs args)

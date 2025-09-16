@@ -1,5 +1,6 @@
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using Avalonia.Threading;
 using sizoscopeX.Core.ViewModels;
 
 namespace sizoscopeX.Core
@@ -25,7 +26,12 @@ namespace sizoscopeX.Core
         {
             InitializeComponent();
             _viewModel = new RootViewModel(node);
-            DataContext = _viewModel;
+            LoadingText.IsVisible = true;
+            Dispatcher.UIThread.Post(() =>
+            {
+                DataContext = _viewModel;
+                LoadingText.IsVisible = false;
+            }, DispatcherPriority.ApplicationIdle);
         }
     }
 }

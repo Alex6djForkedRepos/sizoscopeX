@@ -21,6 +21,7 @@ public sealed class DiffViewModel : INotifyPropertyChanged
             {
                 (_baseline, _compare) = t;
                 _diffSize = compare.Size - baseline.Size;
+                compare.InvalidateOwnership();
                 BaselineData = _baseline;
                 CompareData = _compare;
                 RefreshTree(baselineTree, _baseline, Sorter.BySize());

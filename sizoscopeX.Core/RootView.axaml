@@ -25,5 +25,6 @@
         </TreeDataTemplate>
       </TreeView.ItemTemplate>
     </TreeView>
+		<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="LoadingText" Grid.RowSpan="2" Text="Loading..." />
   </Grid>
 </UserControl>
