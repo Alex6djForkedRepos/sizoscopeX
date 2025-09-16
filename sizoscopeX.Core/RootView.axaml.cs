@@ -26,12 +26,7 @@ namespace sizoscopeX.Core
         {
             InitializeComponent();
             _viewModel = new RootViewModel(node);
-            LoadingText.IsVisible = true;
-            Dispatcher.UIThread.Post(() =>
-            {
-                DataContext = _viewModel;
-                LoadingText.IsVisible = false;
-            }, DispatcherPriority.ApplicationIdle);
+            DataContext = _viewModel;
         }
     }
 }
