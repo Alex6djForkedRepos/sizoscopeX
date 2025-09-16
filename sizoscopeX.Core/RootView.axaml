@@ -14,14 +14,9 @@
       <TextBlock Text="{Binding Name}" />
     </StackPanel>
     <TreeView ItemsSource="{Binding Items}" Grid.Row="1">
-      <TreeView.Styles>
-        <Style Selector="TreeViewItem">
-          <Setter Property="IsExpanded" Value="True" />
-        </Style>
-      </TreeView.Styles>
       <TreeView.ItemTemplate>
         <TreeDataTemplate ItemsSource="{Binding Nodes}">
-          <controls:NodeItemControl Type="{Binding Type}" Text="{Binding Name}" />
+					<controls:NodeItemControl Type="{Binding Type}" Text="{Binding Name}" />
         </TreeDataTemplate>
       </TreeView.ItemTemplate>
     </TreeView>
