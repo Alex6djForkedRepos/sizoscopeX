@@ -38,10 +38,10 @@
 					</Button>
 				</Border>
 			</Grid>
-			<TreeView ItemsSource="{Binding Items}" DoubleTapped="Item_DoubleTapped" Grid.Row="1" IsVisible="{Binding CurrentData, Converter={x:Static ObjectConverters.IsNotNull},Mode=OneWay}">
+			<TreeView x:Name="MstatTree" AutoScrollToSelectedItem="True" ItemsSource="{Binding Items}" DoubleTapped="Tree_DoubleTapped" Grid.Row="1" IsVisible="{Binding CurrentData, Converter={x:Static ObjectConverters.IsNotNull},Mode=OneWay}">
 				<TreeView.ItemTemplate>
 					<TreeDataTemplate ItemsSource="{Binding Nodes}">
-						<controls:TreeItemControl Type="{Binding Type}" Text="{Binding Name}" />
+						<controls:NodeItemControl Type="{Binding Type}" Text="{Binding Name}" />
 					</TreeDataTemplate>
 				</TreeView.ItemTemplate>
 			</TreeView>
@@ -85,7 +85,7 @@
 						<TextBlock Text="Inclusive Size" Grid.Column="6" Margin="4,4,0,0" TextAlignment="Center" x:Name="Column4Header" />
 					</Grid>
 					<Border Grid.Row="1" BorderBrush="Gray" BorderThickness="1" />
-					<ListBox Grid.Row="2" ItemsSource="{Binding SearchResult}" DoubleTapped="Item_DoubleTapped">
+					<ListBox Grid.Row="2" ItemsSource="{Binding SearchResult}" DoubleTapped="List_DoubleTapped">
 						<ListBox.Resources>
 							<conv:TextWidthConverter x:Key="TextWidthConverter" />
 						</ListBox.Resources>
@@ -93,7 +93,7 @@
 							<DataTemplate x:DataType="vm:SearchResultItem">
 								<Grid ColumnDefinitions="Auto,Auto,Auto,Auto">
 									<Border ToolTip.Tip="{Binding Name}" Grid.Column="0" Width="{Binding #Column1Header.Bounds.Width, Mode=OneWay, Converter={StaticResource TextWidthConverter}}">
-										<TextBlock Text="{Binding Name}" />
+										<controls:NodeItemControl Type="{Binding Type}" Text="{Binding Name}" />
 									</Border>
 									<Border ToolTip.Tip="{Binding EntryName}" Grid.Column="1" Margin="40,0,0,0" Width="{Binding #Column2Header.Bounds.Width, Mode=OneWay, Converter={StaticResource TextWidthConverter}}">
 										<TextBlock Text="{Binding EntryName}" />

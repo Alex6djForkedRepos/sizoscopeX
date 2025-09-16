@@ -18,7 +18,7 @@
 			<TreeView ItemsSource="{Binding BaselineItems}" Tag="{Binding BaselineData}" DoubleTapped="Tree_DoubleTapped" Margin="0,8" Grid.Row="1">
 				<TreeView.ItemTemplate>
 					<TreeDataTemplate ItemsSource="{Binding Nodes}">
-						<controls:TreeItemControl Type="{Binding Type}" Text="{Binding Name}" />
+						<controls:NodeItemControl Type="{Binding Type}" Text="{Binding Name}" />
 					</TreeDataTemplate>
 				</TreeView.ItemTemplate>
 			</TreeView>
@@ -33,7 +33,7 @@
 			<TreeView ItemsSource="{Binding CompareItems}" Tag="{Binding CompareData}" DoubleTapped="Tree_DoubleTapped" Margin="0,8" Grid.Row="1">
 				<TreeView.ItemTemplate>
 					<TreeDataTemplate ItemsSource="{Binding Nodes}">
-						<controls:TreeItemControl Type="{Binding Type}" Text="{Binding Name}" />
+						<controls:NodeItemControl Type="{Binding Type}" Text="{Binding Name}" />
 					</TreeDataTemplate>
 				</TreeView.ItemTemplate>
 			</TreeView>

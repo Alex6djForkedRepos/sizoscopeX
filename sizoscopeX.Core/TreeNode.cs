@@ -8,7 +8,8 @@ namespace sizoscopeX.Core
     {
         private string? name;
         private NodeType? type;
-        private bool expaneded;
+        private bool childrenInitialized;
+        private bool isExpanded;
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -23,10 +24,10 @@ namespace sizoscopeX.Core
         {
             get
             {
-                if (!expaneded)
+                if (!childrenInitialized)
                 {
-                    expaneded = true;
-                    Expand(this);
+                    childrenInitialized = true;
+                    InsertChildren(this);
                 }
                 return name;
             }
@@ -37,6 +38,15 @@ namespace sizoscopeX.Core
             }
         }
 
+        public void InitializeChildren()
+        {
+            if (!childrenInitialized)
+            {
+                childrenInitialized = true;
+                InsertChildren(this);
+            }
+        }
+
         public NodeType? Type
         {
             get => type;
@@ -44,6 +54,19 @@ namespace sizoscopeX.Core
             {
                 type = value;
                 PropertyChanged?.Invoke(this, new(nameof(Type)));
+            }
+        }
+
+        public bool IsExpanded
+        {
+            get => isExpanded;
+            set
+            {
+                if (isExpanded != value)
+                {
+                    isExpanded = value;
+                    PropertyChanged?.Invoke(this, new(nameof(IsExpanded)));
+                }
             }
         }
 

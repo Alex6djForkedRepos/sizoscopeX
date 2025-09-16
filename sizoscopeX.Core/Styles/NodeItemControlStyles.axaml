@@ -1,13 +1,14 @@
 <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-		xmlns:controls="using:sizoscopeX.Core.Controls">
+        xmlns:controls="using:sizoscopeX.Core.Controls"
+				xmlns:local="using:sizoscopeX.Core">
 	<Design.PreviewWith>
 		<Border Padding="0" Height="24" Width="100">
-			<controls:TreeItemControl Type="2" Text="Test" />
+			<controls:NodeItemControl Type="2" Text="Test" />
 		</Border>
 	</Design.PreviewWith>
 
-	<Style Selector="controls|TreeItemControl">
+	<Style Selector="controls|NodeItemControl">
 		<Setter Property="Template">
 			<ControlTemplate>
 				<StackPanel Orientation="Horizontal">
@@ -20,31 +21,34 @@
 		</Setter>
 	</Style>
 
-	<Style Selector="controls|TreeItemControl:assembly">
+	<Style Selector="controls|NodeItemControl:assembly">
 		<Setter Property="Image" Value="/Assets/Assembly.png" />
 	</Style>
-	<Style Selector="controls|TreeItemControl:namespace">
+	<Style Selector="controls|NodeItemControl:namespace">
 		<Setter Property="Image" Value="/Assets/Namespace.png" />
 	</Style>
-	<Style Selector="controls|TreeItemControl:class">
+	<Style Selector="controls|NodeItemControl:class">
 		<Setter Property="Image" Value="/Assets/Class.png" />
 	</Style>
-	<Style Selector="controls|TreeItemControl:method">
+	<Style Selector="controls|NodeItemControl:method">
 		<Setter Property="Image" Value="/Assets/Method.png" />
 	</Style>
-	<Style Selector="controls|TreeItemControl:instantiation">
+	<Style Selector="controls|NodeItemControl:instantiation">
 		<Setter Property="Image" Value="/Assets/Instantiation.png" />
 	</Style>
-	<Style Selector="controls|TreeItemControl:frozenData">
+	<Style Selector="controls|NodeItemControl:frozenData">
 		<Setter Property="Image" Value="/Assets/FrozenData.png" />
 	</Style>
-	<Style Selector="controls|TreeItemControl:blob">
+	<Style Selector="controls|NodeItemControl:blob">
 		<Setter Property="Image" Value="/Assets/Blob.png" />
 	</Style>
-	<Style Selector="controls|TreeItemControl:resource">
+	<Style Selector="controls|NodeItemControl:resource">
 		<Setter Property="Image" Value="/Assets/Resource.png" />
 	</Style>
-	<Style Selector="controls|TreeItemControl:field">
+	<Style Selector="controls|NodeItemControl:field">
 		<Setter Property="Image" Value="/Assets/Field.png" />
+	</Style>
+	<Style Selector="TreeViewItem" x:DataType="local:TreeNode">
+		<Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
 	</Style>
 </Styles>

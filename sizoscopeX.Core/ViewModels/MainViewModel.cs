@@ -159,7 +159,7 @@ public class MainViewModel : INotifyPropertyChanged
             {
                 if (t.Name.Contains(_searchPattern) || t.Namespace.Contains(_searchPattern))
                 {
-                    var newItem = new SearchResultItem(t.ToString(), _data.DgmlSupported && _data.DgmlAvailable && t.NodeId >= 0 ? _data.GetNameForId(t.NodeId) : null, t.Size, t.AggregateSize);
+                    var newItem = new SearchResultItem(t.ToString(), NodeType.Class, _data.DgmlSupported && _data.DgmlAvailable && t.NodeId >= 0 ? _data.GetNameForId(t.NodeId) : null, t.Size, t.AggregateSize);
 
                     newItem.Tag = t;
 
@@ -183,7 +183,7 @@ public class MainViewModel : INotifyPropertyChanged
             {
                 if (m.Name.Contains(_searchPattern))
                 {
-                    var newItem = new SearchResultItem(m.ToString(), _data.DgmlSupported && _data.DgmlAvailable && m.NodeId >= 0 ? _data.GetNameForId(m.NodeId) : null, m.Size, m.AggregateSize);
+                    var newItem = new SearchResultItem(m.ToString(), m.IsField ? NodeType.Field : NodeType.Method, _data.DgmlSupported && _data.DgmlAvailable && m.NodeId >= 0 ? _data.GetNameForId(m.NodeId) : null, m.Size, m.AggregateSize);
 
                     newItem.Tag = m;
 

@@ -6,8 +6,8 @@ using Avalonia.Media;
 
 namespace sizoscopeX.Core.Controls;
 
-[PseudoClasses(pcAssembly, pcNamespace, pcClass, pcMethod, pcInstantiation)]
-public class TreeItemControl : TemplatedControl
+[PseudoClasses(pcAssembly, pcNamespace, pcClass, pcMethod, pcInstantiation, pcBlob, pcFrozenData, pcResource, pcField)]
+public class NodeItemControl : TemplatedControl
 {
     private const string pcAssembly = ":assembly";
     private const string pcNamespace = ":namespace";
@@ -19,9 +19,9 @@ public class TreeItemControl : TemplatedControl
     private const string pcResource = ":resource";
     private const string pcField = ":field";
 
-    public static readonly StyledProperty<string?> TextProperty = AvaloniaProperty.Register<TreeItemControl, string?>(nameof(Text));
-    public static readonly StyledProperty<NodeType?> TypeProperty = AvaloniaProperty.Register<TreeItemControl, NodeType?>(nameof(Type));
-    public static readonly StyledProperty<IImage?> ImageProperty = AvaloniaProperty.Register<TreeItemControl, IImage?>(nameof(Image));
+    public static readonly StyledProperty<string?> TextProperty = AvaloniaProperty.Register<NodeItemControl, string?>(nameof(Text));
+    public static readonly StyledProperty<NodeType?> TypeProperty = AvaloniaProperty.Register<NodeItemControl, NodeType?>(nameof(Type));
+    public static readonly StyledProperty<IImage?> ImageProperty = AvaloniaProperty.Register<NodeItemControl, IImage?>(nameof(Image));
 
     private IImage? Image
     {

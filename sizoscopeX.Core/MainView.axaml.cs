@@ -180,11 +180,10 @@ public partial class MainView : UserControl
         Environment.Exit(0);
     }
 
-    private async void Item_DoubleTapped(object? sender, TappedEventArgs args)
+    private async void Tree_DoubleTapped(object? sender, TappedEventArgs args)
     {
         object? tag = null;
         if (sender is TreeView treeView && treeView.SelectedItem is TreeNode tn) tag = tn.Tag;
-        if (sender is ListBox listBox && listBox.SelectedItem is SearchResultItem sri) tag = sri.Tag;
 
         var currentData = viewModel.CurrentData;
         if (currentData is null) return;
@@ -230,6 +229,149 @@ public partial class MainView : UserControl
                 await PromptErrorAsync(ex.Message);
                 return;
             }
+        }
+    }
+
+    private async Task<bool> ExpandToNodeAsync(object nodeToExpand)
+    {
+        var path = await Utils.TaskRunIfPossible(() =>
+        {
+            var queue = new Queue<object>();
+            foreach (var assembly in viewModel.CurrentData?.GetScopes() ?? [])
+            {
+                queue.Enqueue(assembly);
+            }
+
+            var parentMap = new Dictionary<object, object>();
+            var path = new Stack<object>();
+
+            while (queue.Count > 0)
+            {
+                var node = queue.Dequeue();
+                if (node.Equals(nodeToExpand))
+                {
+                    path.Push(node);
+                    while (parentMap.TryGetValue(node, out var parent))
+                    {
+                        path.Push(parent);
+                        node = parent;
+                    }
+                    break;
+                }
+
+                if (node is MstatAssembly asm)
+                {
+                    foreach (var t in asm.GetTypes())
+                    {
+                        queue.Enqueue(t);
+                        parentMap[t] = asm;
+                    }
+                }
+                else if (node is MstatTypeDefinition typeDef)
+                {
+                    foreach (var spec in typeDef.GetTypeSpecifications())
+                    {
+                        queue.Enqueue(spec);
+                        parentMap[spec] = typeDef;
+                    }
+                    foreach (var nested in typeDef.GetNestedTypes())
+                    {
+                        queue.Enqueue(nested);
+                        parentMap[nested] = typeDef;
+                    }
+                    foreach (var member in typeDef.GetMembers())
+                    {
+                        queue.Enqueue(member);
+                        parentMap[member] = typeDef;
+                    }
+                }
+                else if (node is MstatTypeSpecification typeSpec)
+                {
+                    foreach (var member in typeSpec.GetMembers())
+                    {
+                        queue.Enqueue(member);
+                        parentMap[member] = typeSpec;
+                    }
+                }
+                else if (node is MstatMemberDefinition memberDef)
+                {
+                    foreach (var spec in memberDef.GetInstantiations())
+                    {
+                        queue.Enqueue(spec);
+                        parentMap[spec] = memberDef;
+                    }
+                }
+            }
+
+            return path;
+        });
+
+        if (path.Count == 0)
+            return false;
+
+        TreeNode? currentNode = viewModel.Items.FirstOrDefault(x => x.Tag?.Equals(path.Peek()) ?? false);
+        if (currentNode is null)
+            return false;
+        currentNode.InitializeChildren();
+        currentNode.IsExpanded = true;
+        path.Pop();
+
+        bool mayHaveNamespace = true;
+        while (path.Count != 0)
+        {
+            var node = path.Pop();
+            if (mayHaveNamespace)
+            {
+                if (node is MstatTypeDefinition { Namespace: { Length: > 0 } ns } typeDefWithNs)
+                {
+                    currentNode = currentNode.Nodes.FirstOrDefault(x => x.Tag is ValueTuple<MstatAssembly, string> tag && tag.Item2 == ns);
+                    if (currentNode is null)
+                        return false;
+                    currentNode.InitializeChildren();
+                    currentNode.IsExpanded = true;
+                    mayHaveNamespace = false;
+                }
+            }
+
+            if (node is MstatTypeSpecification)
+            {
+                currentNode = currentNode.Nodes.FirstOrDefault(x => x.Type == NodeType.Instantiation);
+                if (currentNode is null)
+                    return false;
+                currentNode.InitializeChildren();
+                currentNode.IsExpanded = true;
+            }
+
+            currentNode = currentNode.Nodes.FirstOrDefault(x => x.Tag?.Equals(node) ?? false);
+            if (currentNode is null)
+                return false;
+            currentNode.InitializeChildren();
+            currentNode.IsExpanded = true;
+        }
+
+        if (currentNode is null)
+            return false;
+
+        MstatTree.ScrollIntoView(currentNode);
+        MstatTree.SelectedItem = currentNode;
+        return true;
+    }
+
+    private async void List_DoubleTapped(object? sender, TappedEventArgs args)
+    {
+        if (sender is not ListBox listBox || listBox.SelectedItem is not SearchResultItem { Tag: object tag }) return;
+
+        viewModel.Loading = true;
+        try
+        {
+            if (!await ExpandToNodeAsync(tag))
+            {
+                await PromptErrorAsync("Unable to locate the specified node in the dependency graph.");
+            }
+        }
+        finally
+        {
+            viewModel.Loading = false;
         }
     }
 
@@ -398,9 +540,9 @@ public partial class MainView : UserControl
             ]
         }) as IStorageFile;
         if (result.FirstOrDefault(i => i is IStorageFile
-        {
-            Name: [.., '.', 'm' or 'M', 's' or 'S', 't' or 'T', 'a' or 'A', 't' or 'T']
-        }) is not IStorageFile mstat)
+            {
+                Name: [.., '.', 'm' or 'M', 's' or 'S', 't' or 'T', 'a' or 'A', 't' or 'T']
+            }) is not IStorageFile mstat)
         {
             throw new InvalidOperationException("An invalid file has been dropped.");
         }

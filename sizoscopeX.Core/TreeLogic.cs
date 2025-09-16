@@ -40,7 +40,7 @@ namespace sizoscopeX.Core
                     continue;
 
                 string name = $"{asm.Name} ({AsFileSize(asm.AggregateSize)})";
-                TreeNode node = new TreeNode(name, 0, sorter)
+                TreeNode node = new TreeNode(name, NodeType.Assembly, sorter)
                 {
                     Tag = asm,
                     MstatData = data
@@ -49,7 +49,7 @@ namespace sizoscopeX.Core
             }
         }
 
-        public static void Expand(TreeNode node)
+        public static void InsertChildren(TreeNode node)
         {
             if (node is { Tag: MstatData mstat, Type: NodeType.FrozenData })
             {
