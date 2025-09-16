@@ -2,42 +2,42 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-		xmlns:controls="using:sizoscopeX.Core.Controls"
-		xmlns:vm="using:sizoscopeX.Core.ViewModels"
+    xmlns:controls="using:sizoscopeX.Core.Controls"
+    xmlns:vm="using:sizoscopeX.Core.ViewModels"
         MinWidth="720" MinHeight="200"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="sizoscopeX.Core.DiffView"
-		x:DataType="vm:DiffViewModel">
-	<Grid ColumnDefinitions="*,Auto,*">
-		<Grid RowDefinitions="Auto,*" Grid.Column="0" Margin="8">
-			<TextBlock Text="Only in baseline:" Margin="8,0" Grid.Row="0" VerticalAlignment="Center" />
-			<ComboBox Grid.Row="0" SelectedIndex="{Binding BaselineSortMode,Mode=TwoWay}" HorizontalAlignment="Right" VerticalAlignment="Center">
-				<ComboBoxItem Content="Sort by Size" />
-				<ComboBoxItem Content="Sort by Name" />
-			</ComboBox>
-			<TreeView ItemsSource="{Binding BaselineItems}" Tag="{Binding BaselineData}" DoubleTapped="Tree_DoubleTapped" Margin="0,8" Grid.Row="1">
-				<TreeView.ItemTemplate>
-					<TreeDataTemplate ItemsSource="{Binding Nodes}">
-						<controls:NodeItemControl Type="{Binding Type}" Text="{Binding Name}" />
-					</TreeDataTemplate>
-				</TreeView.ItemTemplate>
-			</TreeView>
-		</Grid>
-		<GridSplitter Grid.Column="1" />
-		<Grid RowDefinitions="Auto,*" Grid.Column="2" Margin="8">
-			<TextBlock Text="Only in compare:" Margin="8,0" Grid.Row="0" VerticalAlignment="Center" />
-			<ComboBox Grid.Row="0" SelectedIndex="{Binding CompareSortMode,Mode=TwoWay}" HorizontalAlignment="Right" VerticalAlignment="Center">
-				<ComboBoxItem Content="Sort by Size" />
-				<ComboBoxItem Content="Sort by Name" />
-			</ComboBox>
-			<TreeView ItemsSource="{Binding CompareItems}" Tag="{Binding CompareData}" DoubleTapped="Tree_DoubleTapped" Margin="0,8" Grid.Row="1">
-				<TreeView.ItemTemplate>
-					<TreeDataTemplate ItemsSource="{Binding Nodes}">
-						<controls:NodeItemControl Type="{Binding Type}" Text="{Binding Name}" />
-					</TreeDataTemplate>
-				</TreeView.ItemTemplate>
-			</TreeView>
-		</Grid>
-		<ProgressBar Grid.ColumnSpan="3" IsVisible="{Binding Loading}" IsIndeterminate="true" Width="150" />
-	</Grid>
+    x:DataType="vm:DiffViewModel">
+  <Grid ColumnDefinitions="*,Auto,*">
+    <Grid RowDefinitions="Auto,*" Grid.Column="0" Margin="8">
+      <TextBlock Text="Only in baseline:" Margin="8,0" Grid.Row="0" VerticalAlignment="Center" />
+      <ComboBox Grid.Row="0" SelectedIndex="{Binding BaselineSortMode,Mode=TwoWay}" HorizontalAlignment="Right" VerticalAlignment="Center">
+        <ComboBoxItem Content="Sort by Size" />
+        <ComboBoxItem Content="Sort by Name" />
+      </ComboBox>
+      <TreeView ItemsSource="{Binding BaselineItems}" Tag="{Binding BaselineData}" DoubleTapped="Tree_DoubleTapped" Margin="0,8" Grid.Row="1">
+        <TreeView.ItemTemplate>
+          <TreeDataTemplate ItemsSource="{Binding Nodes}">
+            <controls:NodeItemControl Type="{Binding Type}" Text="{Binding Name}" />
+          </TreeDataTemplate>
+        </TreeView.ItemTemplate>
+      </TreeView>
+    </Grid>
+    <GridSplitter Grid.Column="1" />
+    <Grid RowDefinitions="Auto,*" Grid.Column="2" Margin="8">
+      <TextBlock Text="Only in compare:" Margin="8,0" Grid.Row="0" VerticalAlignment="Center" />
+      <ComboBox Grid.Row="0" SelectedIndex="{Binding CompareSortMode,Mode=TwoWay}" HorizontalAlignment="Right" VerticalAlignment="Center">
+        <ComboBoxItem Content="Sort by Size" />
+        <ComboBoxItem Content="Sort by Name" />
+      </ComboBox>
+      <TreeView ItemsSource="{Binding CompareItems}" Tag="{Binding CompareData}" DoubleTapped="Tree_DoubleTapped" Margin="0,8" Grid.Row="1">
+        <TreeView.ItemTemplate>
+          <TreeDataTemplate ItemsSource="{Binding Nodes}">
+            <controls:NodeItemControl Type="{Binding Type}" Text="{Binding Name}" />
+          </TreeDataTemplate>
+        </TreeView.ItemTemplate>
+      </TreeView>
+    </Grid>
+    <ProgressBar Grid.ColumnSpan="3" IsVisible="{Binding Loading}" IsIndeterminate="true" Width="150" />
+  </Grid>
 </UserControl>
