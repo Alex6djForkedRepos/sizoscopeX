@@ -25,7 +25,7 @@ The tool only supports the [Native AOT deployment model](https://learn.microsoft
 </PropertyGroup>
 ```
 
-Once you have that, `dotnet publish` your project as usual. After publishing, you should see a *.mstat and *.dgml.xml file under `obj\Release\net[7|8].0\[linux|win]-[x64|arm64]\native` - these are the files sizoscopeX operates on.
+Once you have that, `dotnet publish` your project as usual. After publishing, you should see a *.mstat and *.dgml.xml file under `obj\<config>\<tfm>\<rid>\native` - these are the files sizoscopeX operates on.
 
 Launch the tool and open the MSTAT file. The associated *.dgml.xml file will be loaded automatically if it's next to the *.mstat. If the *.dgml.xml doesn't exist, root cause analysis will not work.
 
@@ -33,7 +33,7 @@ Once the file loads, you'll be greeted with the main screen that shows assembly 
 
 ![Main window screenshot](docs/mainwindow.png)
 
-You can click around things that look interesting. You can also open the search subwindow where you can sort individual entries by exclusive/inclusive size.
+You can click around things that look interesting. You can also use the search panel where you can sort individual entries by exclusive/inclusive size. Double-clicking an entry in the search panel will navigate to the corresponding node in the tree view.
 
 If you have a different MSTAT file you'd like to compare with, click the Diff button to enter a diff view:
 

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.5.33414.496
+# Visual Studio Version 18
+VisualStudioVersion = 18.0.11010.61
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "sizoscopeX.Core", "sizoscopeX.Core\sizoscopeX.Core.csproj", "{67B7AFF9-A81C-41AB-97BB-752EA54B2004}"
 EndProject
@@ -15,6 +15,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ソリューション項目
 		Directory.Packages.props = Directory.Packages.props
 		.github\workflows\dotnet.yml = .github\workflows\dotnet.yml
 		nuget.config = nuget.config
+		README.md = README.md
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avalonia.Browser", "Avalonia.Browser\Avalonia.Browser.csproj", "{276F1E02-A38C-4D5D-AFCF-6C905DABFB1F}"
