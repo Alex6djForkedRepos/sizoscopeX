@@ -39,16 +39,22 @@ namespace sizoscopeX.Core
             }
 
             var limit = 512;
+            var currentNode = _viewModel.Items.FirstOrDefault();
             while (--limit >= 0 && queue.TryDequeue(out var item))
             {
                 item.IsExpanded = true;
+                bool isFirst = true;
                 foreach (var child in item.Nodes)
                 {
                     queue.Enqueue(child);
+                    if (isFirst && item == currentNode)
+                    {
+                        currentNode = child;
+                        isFirst = false;
+                    }
                 }
             }
 
-            var currentNode = _viewModel.Items.FirstOrDefault();
             while (currentNode != null)
             {
                 currentNode.IsExpanded = true;
