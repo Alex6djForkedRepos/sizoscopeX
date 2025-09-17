@@ -16,7 +16,7 @@
     <TreeView ItemsSource="{Binding Items}" Grid.Row="1">
       <TreeView.ItemTemplate>
         <TreeDataTemplate ItemsSource="{Binding Nodes}">
-          <controls:NodeItemControl Type="{Binding Type}" Text="{Binding Name}" />
+          <controls:NodeItemControl Text="{Binding Name}" />
         </TreeDataTemplate>
       </TreeView.ItemTemplate>
     </TreeView>

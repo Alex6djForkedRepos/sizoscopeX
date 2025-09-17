@@ -20,6 +20,7 @@ namespace sizoscopeX.Core
         {
             Utils.SetTitle("Root View - sizoscopeX");
             base.OnLoaded(e);
+            ExpandTree();
         }
 
         public RootView(MstatData.Node node)
@@ -27,6 +28,32 @@ namespace sizoscopeX.Core
             InitializeComponent();
             _viewModel = new RootViewModel(node);
             DataContext = _viewModel;
+        }
+
+        private void ExpandTree()
+        {
+            var queue = new Queue<TreeNode>();
+            foreach (var item in _viewModel.Items)
+            {
+                queue.Enqueue(item);
+            }
+
+            var limit = 512;
+            while (--limit >= 0 && queue.TryDequeue(out var item))
+            {
+                item.IsExpanded = true;
+                foreach (var child in item.Nodes)
+                {
+                    queue.Enqueue(child);
+                }
+            }
+
+            var currentNode = _viewModel.Items.FirstOrDefault();
+            while (currentNode != null)
+            {
+                currentNode.IsExpanded = true;
+                currentNode = currentNode.FirstNode;
+            }
         }
     }
 }
