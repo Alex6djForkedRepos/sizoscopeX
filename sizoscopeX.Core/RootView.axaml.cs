@@ -32,6 +32,7 @@ namespace sizoscopeX.Core
 
         private void ExpandTree()
         {
+            if (_viewModel.Items is null) return;
             var queue = new Queue<TreeNode>();
             foreach (var item in _viewModel.Items)
             {
@@ -43,6 +44,7 @@ namespace sizoscopeX.Core
             while (--limit >= 0 && queue.TryDequeue(out var item))
             {
                 item.IsExpanded = true;
+                if (item.Nodes is null) continue;
                 bool isFirst = true;
                 foreach (var child in item.Nodes)
                 {
