@@ -5,6 +5,7 @@ using Avalonia.Platform.Storage;
 using FluentAvalonia.UI.Controls;
 using Avalonia.Input;
 using static MstatData;
+using System.Linq;
 
 namespace sizoscopeX.Core;
 
@@ -26,7 +27,7 @@ public partial class MainView : UserControl
     private void DragOver(object? sender, DragEventArgs e)
     {
         e.DragEffects &= DragDropEffects.Copy;
-        if (!e.Data.Contains(DataFormats.Files) || e.Data.GetFiles()?.FirstOrDefault() is not IStorageFile)
+        if (!e.DataTransfer.Formats.Contains(DataFormat.File))
             e.DragEffects = DragDropEffects.None;
     }
 
@@ -35,14 +36,10 @@ public partial class MainView : UserControl
         try
         {
             e.DragEffects &= DragDropEffects.Copy;
-            if (e.Data.Contains(DataFormats.Files))
+            if (e.DataTransfer.TryGetFiles() is { } files)
             {
-                var files = e.Data.GetFiles()?.OfType<IStorageFile>().ToArray();
-                if (files is not null)
-                {
-                    viewModel.Loading = true;
-                    await LoadForBaseAsync(files);
-                }
+                viewModel.Loading = true;
+                await LoadForBaseAsync([.. files.OfType<IStorageFile>()]);
             }
         }
         catch (Exception ex)

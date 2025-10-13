@@ -21,8 +21,8 @@
 
   <ItemGroup>
     <PackageReference Include="Avalonia" />
+    <PackageReference Condition="'$(Configuration)'=='Debug'" Include="AvaloniaUI.DiagnosticsSupport" />
     <PackageReference Include="FluentAvaloniaUI" />
-    <PackageReference Condition="'$(Configuration)'=='Debug'" Include="Avalonia.Diagnostics" />
     <PackageReference Include="TurboXml" />
   </ItemGroup>
 
