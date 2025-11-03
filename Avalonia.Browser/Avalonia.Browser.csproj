@@ -4,7 +4,7 @@
     <Nullable>enable</Nullable>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <AssemblyName>Avalonia.Browser</AssemblyName>
-    <Version>11.3.7</Version>
+    <Version>11.3.8</Version>
     <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)/avalonia.snk</AssemblyOriginatorKeyFile>
     <SignAssembly>true</SignAssembly>
     <IsAotCompatible>true</IsAotCompatible>
