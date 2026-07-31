@@ -10,12 +10,11 @@ using System.Runtime.InteropServices;
 
 namespace sizoscopeX.Core;
 
-public partial class FluentAppWindow : AppWindow
+public partial class FluentAppWindow : FAAppWindow
 {
     public FluentAppWindow()
     {
         InitializeComponent();
-        TitleBar.TitleBarHitTestType = TitleBarHitTestType.Complex;
     }
 
     protected override void OnClosing(WindowClosingEventArgs e)

@@ -112,7 +112,7 @@ public partial class MainView : UserControl
 
     private async Task PromptErrorAsync(string message)
     {
-        await new ContentDialog
+        await new FAContentDialog
         {
             CloseButtonText = "OK",
             Title = "Error",
@@ -373,7 +373,7 @@ public partial class MainView : UserControl
 
     public async void ThirdParty_Clicked(object? sender, RoutedEventArgs args)
     {
-        var dialog = new ContentDialog
+        var dialog = new FAContentDialog
         {
             CloseButtonText = "OK",
             Title = "Third party notices",
@@ -482,15 +482,15 @@ public partial class MainView : UserControl
 
     public async void About_Clicked(object? sender, RoutedEventArgs args)
     {
-        var dialog = new ContentDialog
+        var dialog = new FAContentDialog
         {
             CloseButtonText = "OK",
             Title = "About",
             Content = $"""
                        sizoscopeX - {typeof(MainView).Assembly?.GetName().Version}
 
-                       Copyright (c) 2025 Michal Strehovsky
-                       Copyright (c) 2025 hez2010
+                       Copyright (c) 2026 Michal Strehovsky
+                       Copyright (c) 2026 hez2010
 
                        https://github.com/MichalStrehovsky
                        https://github.com/hez2010

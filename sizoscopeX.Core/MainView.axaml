@@ -66,7 +66,7 @@
     <GridSplitter Grid.Column="1" />
     <Grid Grid.Column="2" RowDefinitions="Auto,*" Margin="4">
       <Grid ColumnDefinitions="*,Auto" Grid.Row="0">
-        <TextBox Grid.Column="0" Watermark="Find..." Text="{Binding	SearchPattern, Mode=TwoWay}" />
+        <TextBox Grid.Column="0" PlaceholderText="Find..." Text="{Binding	SearchPattern, Mode=TwoWay}" />
         <ComboBox Grid.Column="1" MinWidth="180" SelectedIndex="{Binding SearchMode, Mode=TwoWay}">
           <ComboBoxItem Content="Types and Members"></ComboBoxItem>
           <ComboBoxItem Content="Types"></ComboBoxItem>

@@ -75,11 +75,11 @@ partial class MstatData
         private THandle _current;
 
         public Enumerator(MstatData data, THandle first)
-            => (_data, _first, _current) = (data, first, default);
+            => (_data, _first, _current) = (data, first, default!);
 
         public TRecord Current => default(TNext).GetCurrent(_data, _current);
 
-        object IEnumerator.Current => Current;
+        object? IEnumerator.Current => Current;
 
         public bool MoveNext()
         {
@@ -99,7 +99,7 @@ partial class MstatData
             return true;
         }
 
-        public void Reset() => _current = default;
+        public void Reset() => _current = default!;
 
         public Enumerator<THandle, TRecord, TNext> GetEnumerator() => this;
 

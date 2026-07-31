@@ -59,7 +59,7 @@ namespace sizoscopeX.Core
             {
                 if (id.Value < 0)
                 {
-                    var dialog = new ContentDialog
+                    var dialog = new FAContentDialog
                     {
                         CloseButtonText = "OK",
                         Title = "Error",
@@ -71,7 +71,7 @@ namespace sizoscopeX.Core
 
                 if (!currentData.DgmlSupported)
                 {
-                    var dialog = new ContentDialog
+                    var dialog = new FAContentDialog
                     {
                         CloseButtonText = "OK",
                         Title = "Error",
@@ -83,7 +83,7 @@ namespace sizoscopeX.Core
 
                 if (!currentData.DgmlAvailable || currentData.GetNodeForId(id.Value, out _) is not Node node)
                 {
-                    var dialog = new ContentDialog
+                    var dialog = new FAContentDialog
                     {
                         CloseButtonText = "OK",
                         Title = "Error",
